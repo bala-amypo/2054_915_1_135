@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "events")
 public class Event {
 
     @Id
@@ -16,13 +15,13 @@ public class Event {
     private String location;
     private String category;
 
-    private boolean isActive = true;
+    @ManyToOne
+    private User publisher;
+
+    private boolean isActive;
 
     private Instant createdAt;
     private Instant lastUpdatedAt;
-
-    @ManyToOne
-    private User publisher;
 
     @PrePersist
     public void onCreate() {
@@ -36,7 +35,7 @@ public class Event {
         this.lastUpdatedAt = Instant.now();
     }
 
-    // Getters & Setters
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -52,11 +51,11 @@ public class Event {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
-
     public User getPublisher() { return publisher; }
     public void setPublisher(User publisher) { this.publisher = publisher; }
+
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { isActive = active; }
 
     public Instant getCreatedAt() { return createdAt; }
     public Instant getLastUpdatedAt() { return lastUpdatedAt; }

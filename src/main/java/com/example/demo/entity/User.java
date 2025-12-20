@@ -13,7 +13,7 @@ public class User {
 
     private String fullName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
@@ -25,13 +25,13 @@ public class User {
 
     @PrePersist
     public void onCreate() {
+        this.createdAt = Instant.now();
         if (this.role == null) {
             this.role = Role.SUBSCRIBER;
         }
-        this.createdAt = Instant.now();
     }
 
-    // Getters & Setters
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

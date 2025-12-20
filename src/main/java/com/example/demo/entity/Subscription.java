@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "subscriptions")
 public class Subscription {
 
     @Id
@@ -24,7 +23,7 @@ public class Subscription {
         this.subscribedAt = Instant.now();
     }
 
-    // Getters & Setters
+    // getters & setters
     public Long getId() { return id; }
 
     public User getUser() { return user; }
