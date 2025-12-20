@@ -1,13 +1,44 @@
-package com.example.demo.repository;
+public class EventServiceImpl implements EventService {
 
-import com.example.demo.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+    private final EventRepository eventRepository;
 
-import java.util.Optional;
+    public EventServiceImpl(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
 
-public interface UserRepository extends JpaRepository<User, Long> {
+    @Override
+    public Event createEvent(Event event) {
+        return eventRepository.save(event);
+    }
 
-    boolean existsByEmail(String email);
+    @Override
+    public Event updateEvent(Long id, Event event) {
+        Event existing = eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
-    Optional<User> findByEmail(String email);
+        existing.setTitle(event.getTitle());
+        existing.setDescription(event.getDescription());
+        existing.setLocation(event.getLocation());
+        existing.setCategory(event.getCategory());
+
+        return eventRepository.save(existing);
+    }
+
+    @Override
+    public Event getById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+    }
+
+    @Override
+    public List<Event> getActiveEvents() {
+        return eventRepository.findByIsActiveTrue();
+    }
+
+    @Override
+    public void deactivateEvent(Long id) {
+        Event event = getById(id);
+        event.setActive(false);
+        eventRepository.save(event);
+    }
 }
