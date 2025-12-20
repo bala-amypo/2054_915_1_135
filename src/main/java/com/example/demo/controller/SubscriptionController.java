@@ -23,20 +23,19 @@ public class SubscriptionController {
     }
 
     @DeleteMapping("/{eventId}")
-    public String unsubscribe(@PathVariable Long eventId,
-                              @RequestParam Long userId) {
+    public void unsubscribe(@PathVariable Long eventId,
+                            @RequestParam Long userId) {
         subscriptionService.unsubscribe(userId, eventId);
-        return "UNSUBSCRIBED";
     }
 
     @GetMapping("/user/{userId}")
-    public List<Subscription> getUserSubscriptions(@PathVariable Long userId) {
+    public List<Subscription> userSubs(@PathVariable Long userId) {
         return subscriptionService.getUserSubscriptions(userId);
     }
 
-    @GetMapping("/check")
-    public boolean check(@RequestParam Long userId,
-                         @RequestParam Long eventId) {
+    @GetMapping("/check/{userId}/{eventId}")
+    public boolean check(@PathVariable Long userId,
+                         @PathVariable Long eventId) {
         return subscriptionService.isSubscribed(userId, eventId);
     }
 }

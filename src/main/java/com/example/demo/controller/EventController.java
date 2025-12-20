@@ -27,18 +27,17 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public Event getById(@PathVariable Long id) {
+    public Event get(@PathVariable Long id) {
         return eventService.getById(id);
     }
 
     @GetMapping("/active")
-    public List<Event> getActive() {
+    public List<Event> active() {
         return eventService.getActiveEvents();
     }
 
     @PatchMapping("/{id}/deactivate")
-    public String deactivate(@PathVariable Long id) {
+    public void deactivate(@PathVariable Long id) {
         eventService.deactivateEvent(id);
-        return "DEACTIVATED";
     }
 }

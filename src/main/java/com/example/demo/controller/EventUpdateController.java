@@ -22,12 +22,12 @@ public class EventUpdateController {
     }
 
     @GetMapping("/event/{eventId}")
-    public List<EventUpdate> getForEvent(@PathVariable Long eventId) {
+    public List<EventUpdate> forEvent(@PathVariable Long eventId) {
         return eventUpdateService.getUpdatesForEvent(eventId);
     }
 
     @GetMapping("/{id}")
-    public EventUpdate getById(@PathVariable Long id) {
-        return eventUpdateService.getUpdateById(id).orElse(null);
+    public EventUpdate get(@PathVariable Long id) {
+        return eventUpdateService.getUpdateById(id);
     }
 }
