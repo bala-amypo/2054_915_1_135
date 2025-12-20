@@ -1,72 +1,49 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Event;
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
+import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.EventRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.EventService;
-
-import java.util.List;
 
 public class EventServiceImpl implements EventService {
 
-    private final EventRepository eventRepository;
-    private final UserRepository userRepository;
+    private final EventRepository repo;
+    private final UserRepository userRepo;
 
-    public EventServiceImpl(EventRepository eventRepository,
-                            UserRepository userRepository) {
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
+    public EventServiceImpl(EventRepository repo, UserRepository userRepo) {
+        this.repo = repo;
+        this.userRepo = userRepo;
     }
 
-    @Override
     public Event createEvent(Event event) {
-        User publisher = userRepository.findById(
-                event.getPublisher().getId()
-        ).orElseThrow(() ->
-                new ResourceNotFoundException("User not found"));
+        User publisher = userRepo.findById(event.getPublisher().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (publisher.getRole() != Role.PUBLISHER &&
-            publisher.getRole() != Role.ADMIN) {
-            throw new BadRequestException("Only PUBLISHER or ADMIN");
+        if (publisher.getRole() != Role.PUBLISHER && publisher.getRole() != Role.ADMIN) {
+            throw new IllegalArgumentException("Only PUBLISHER or ADMIN can create events");
         }
-
-        return eventRepository.save(event);
+        return repo.save(event);
     }
 
-    @Override
     public Event updateEvent(Long id, Event updated) {
-        Event existing = eventRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Event not found"));
+        Event existing = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
         existing.setTitle(updated.getTitle());
         existing.setDescription(updated.getDescription());
         existing.setLocation(updated.getLocation());
         existing.setCategory(updated.getCategory());
-
-        return eventRepository.save(existing);
+        return repo.save(existing);
     }
 
-    @Override
     public Event getById(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Event not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
     }
 
-    @Override
-    public List<Event> getActiveEvents() {
-        return eventRepository.findByIsActiveTrue();
-    }
-
-    @Override
-    public void deactivateEvent(Long id) {
-        Event event = getById(id);
-        event.setActive(false);
-        eventRepository.save(event);
+    public Event deactivateEvent(Long id) {
+        Event e = getById(id);
+        e.setActive(false);
+        return repo.save(e);
     }
 }

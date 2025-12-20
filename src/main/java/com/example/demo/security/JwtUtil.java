@@ -1,72 +1,49 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-import java.security.Key;
+import io.jsonwebtoken.*;
 import java.util.Date;
 
 public class JwtUtil {
 
-    private final Key key;
-    private final long validityInMs;
+    private final String secret;
+    private final long validity;
 
-    // REQUIRED constructor (tests use this)
-    public JwtUtil(String secret, long validityInMs) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMs = validityInMs;
+    public JwtUtil(String secret, long validity) {
+        this.secret = secret;
+        this.validity = validity;
     }
 
-    // REQUIRED by tests
-    public String generateToken(Long userId, String username, String role) {
-        Claims claims = Jwts.claims();
-        claims.put("userId", userId);
-        claims.put("role", role);
-        claims.setSubject(username);
-
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityInMs);
-
+    public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .claim("userId", userId)
+                .claim("role", role)
+                .setSubject(email)
+                .setExpiration(new Date(System.currentTimeMillis() + validity))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    // REQUIRED by tests
     public boolean validateToken(String token) {
         try {
-            parseClaims(token);
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
-        } catch (Exception ex) {
+        } catch (Exception e) {
             return false;
         }
     }
 
-    // REQUIRED by tests
     public Long getUserIdFromToken(String token) {
-        return parseClaims(token).get("userId", Long.class);
+        return Jwts.parser().setSigningKey(secret)
+                .parseClaimsJws(token).getBody().get("userId", Long.class);
     }
 
-    // REQUIRED by tests
-    public String getRoleFromToken(String token) {
-        return parseClaims(token).get("role", String.class);
-    }
-
-    // REQUIRED by tests
     public String getUsernameFromToken(String token) {
-        return parseClaims(token).getSubject();
+        return Jwts.parser().setSigningKey(secret)
+                .parseClaimsJws(token).getBody().getSubject();
     }
 
-    private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public String getRoleFromToken(String token) {
+        return Jwts.parser().setSigningKey(secret)
+                .parseClaimsJws(token).getBody().get("role", String.class);
     }
 }
