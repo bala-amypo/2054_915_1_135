@@ -21,6 +21,7 @@ public class EventUpdate {
 
     private Instant timestamp;
 
+    // ===== Lifecycle =====
     @PrePersist
     public void onCreate() {
         this.timestamp = Instant.now();
@@ -29,5 +30,40 @@ public class EventUpdate {
         }
     }
 
-    // getters & setters
+    // ===== Getters & Setters =====
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public SeverityLevel getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(SeverityLevel severityLevel) {
+        this.severityLevel = severityLevel;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
 }
