@@ -1,44 +1,11 @@
-public class EventServiceImpl implements EventService {
+package com.example.demo.repository;
 
-    private final EventRepository eventRepository;
+import com.example.demo.entity.User;
+import java.util.Optional;
 
-    public EventServiceImpl(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
-
-    @Override
-    public Event createEvent(Event event) {
-        return eventRepository.save(event);
-    }
-
-    @Override
-    public Event updateEvent(Long id, Event event) {
-        Event existing = eventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
-
-        existing.setTitle(event.getTitle());
-        existing.setDescription(event.getDescription());
-        existing.setLocation(event.getLocation());
-        existing.setCategory(event.getCategory());
-
-        return eventRepository.save(existing);
-    }
-
-    @Override
-    public Event getById(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
-    }
-
-    @Override
-    public List<Event> getActiveEvents() {
-        return eventRepository.findByIsActiveTrue();
-    }
-
-    @Override
-    public void deactivateEvent(Long id) {
-        Event event = getById(id);
-        event.setActive(false);
-        eventRepository.save(event);
-    }
+public interface UserRepository {
+    Optional<User> findByEmail(String email);
+    Optional<User> findById(Long id);
+    boolean existsByEmail(String email);
+    User save(User user);
 }
