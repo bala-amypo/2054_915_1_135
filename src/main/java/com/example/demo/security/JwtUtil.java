@@ -13,11 +13,13 @@ public class JwtUtil {
     private final Key key;
     private final long validityInMs;
 
+    // REQUIRED constructor (tests use this)
     public JwtUtil(String secret, long validityInMs) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.validityInMs = validityInMs;
     }
 
+    // REQUIRED by tests
     public String generateToken(Long userId, String username, String role) {
         Claims claims = Jwts.claims();
         claims.put("userId", userId);
@@ -35,28 +37,32 @@ public class JwtUtil {
                 .compact();
     }
 
+    // REQUIRED by tests
     public boolean validateToken(String token) {
         try {
-            getAllClaims(token);
+            parseClaims(token);
             return true;
         } catch (Exception ex) {
             return false;
         }
     }
 
+    // REQUIRED by tests
     public Long getUserIdFromToken(String token) {
-        return getAllClaims(token).get("userId", Long.class);
+        return parseClaims(token).get("userId", Long.class);
     }
 
+    // REQUIRED by tests
     public String getRoleFromToken(String token) {
-        return getAllClaims(token).get("role", String.class);
+        return parseClaims(token).get("role", String.class);
     }
 
+    // REQUIRED by tests
     public String getUsernameFromToken(String token) {
-        return getAllClaims(token).getSubject();
+        return parseClaims(token).getSubject();
     }
 
-    private Claims getAllClaims(String token) {
+    private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

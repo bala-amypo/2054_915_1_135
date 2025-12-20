@@ -33,9 +33,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Event not found"));
 
         Subscription s = new Subscription();
         s.setUser(user);
