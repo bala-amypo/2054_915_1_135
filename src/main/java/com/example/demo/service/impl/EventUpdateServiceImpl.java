@@ -16,6 +16,7 @@ public class EventUpdateServiceImpl implements EventUpdateService {
     private final EventRepository eventRepository;
     private final BroadcastService broadcastService;
 
+    // Constructor injection (tests instantiate manually)
     public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository,
                                   EventRepository eventRepository,
                                   BroadcastService broadcastService) {
@@ -29,14 +30,13 @@ public class EventUpdateServiceImpl implements EventUpdateService {
         Long eventId = update.getEvent().getId();
 
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Event not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
         update.setEvent(event);
 
         EventUpdate saved = eventUpdateRepository.save(update);
 
-        // CRITICAL: trigger broadcast after saving
+        // trigger broadcast
         broadcastService.broadcastUpdate(saved.getId());
 
         return saved;
@@ -44,14 +44,12 @@ public class EventUpdateServiceImpl implements EventUpdateService {
 
     @Override
     public List<EventUpdate> getUpdatesForEvent(Long eventId) {
-        return eventUpdateRepository
-                .findByEventIdOrderByTimestampAsc(eventId);
+        return eventUpdateRepository.findByEventIdOrderByTimestampAsc(eventId);
     }
 
     @Override
     public EventUpdate getUpdateById(Long id) {
         return eventUpdateRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Update not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Update not found"));
     }
 }
