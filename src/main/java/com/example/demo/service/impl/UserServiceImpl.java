@@ -7,6 +7,7 @@ import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+@Service
 
 public class UserServiceImpl implements UserService {
 

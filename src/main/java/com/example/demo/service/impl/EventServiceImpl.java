@@ -9,6 +9,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.EventService;
 
 import java.util.List;
+@Service
 
 public class EventServiceImpl implements EventService {
 

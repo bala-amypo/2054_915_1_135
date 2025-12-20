@@ -11,6 +11,7 @@ import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.service.BroadcastService;
 
 import java.util.List;
+@Service
 
 public class BroadcastServiceImpl implements BroadcastService {
 

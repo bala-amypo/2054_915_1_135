@@ -3,7 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.Subscription;
 
 import java.util.List;
-
+@Service
 public interface SubscriptionService {
 
     Subscription subscribe(Long userId, Long eventId);

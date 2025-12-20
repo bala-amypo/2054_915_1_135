@@ -3,7 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.Event;
 
 import java.util.List;
-
+@Service
 public interface EventService {
 
     Event createEvent(Event event);
