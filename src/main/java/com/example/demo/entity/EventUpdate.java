@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
+@Table(name = "event_updates")
 public class EventUpdate {
 
     @Id
@@ -13,7 +14,7 @@ public class EventUpdate {
     @ManyToOne
     private Event event;
 
-    private String updateContent;
+    private String content;
 
     @Enumerated(EnumType.STRING)
     private SeverityLevel severityLevel;
@@ -29,17 +30,4 @@ public class EventUpdate {
     }
 
     // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Event getEvent() { return event; }
-    public void setEvent(Event event) { this.event = event; }
-
-    public String getUpdateContent() { return updateContent; }
-    public void setUpdateContent(String updateContent) { this.updateContent = updateContent; }
-
-    public SeverityLevel getSeverityLevel() { return severityLevel; }
-    public void setSeverityLevel(SeverityLevel severityLevel) { this.severityLevel = severityLevel; }
-
-    public Instant getTimestamp() { return timestamp; }
 }
