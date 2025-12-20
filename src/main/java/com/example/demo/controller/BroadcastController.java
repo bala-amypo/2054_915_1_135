@@ -17,12 +17,12 @@ public class BroadcastController {
     }
 
     @PostMapping("/trigger/{updateId}")
-    public void trigger(@PathVariable Long updateId) {
+    public void triggerBroadcast(@PathVariable Long updateId) {
         broadcastService.broadcastUpdate(updateId);
     }
 
     @GetMapping("/logs/{updateId}")
-    public List<BroadcastLog> logs(@PathVariable Long updateId) {
+    public List<BroadcastLog> getLogs(@PathVariable Long updateId) {
         return broadcastService.getLogsForUpdate(updateId);
     }
 }

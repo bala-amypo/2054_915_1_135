@@ -29,7 +29,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<Subscription> userSubs(@PathVariable Long userId) {
+    public List<Subscription> getUserSubscriptions(@PathVariable Long userId) {
         return subscriptionService.getUserSubscriptions(userId);
     }
 

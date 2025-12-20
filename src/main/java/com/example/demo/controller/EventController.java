@@ -17,22 +17,23 @@ public class EventController {
     }
 
     @PostMapping
-    public Event create(@RequestBody Event event) {
+    public Event createEvent(@RequestBody Event event) {
         return eventService.createEvent(event);
     }
 
     @PutMapping("/{id}")
-    public Event update(@PathVariable Long id, @RequestBody Event event) {
+    public Event updateEvent(@PathVariable Long id,
+                             @RequestBody Event event) {
         return eventService.updateEvent(id, event);
     }
 
     @GetMapping("/{id}")
-    public Event get(@PathVariable Long id) {
+    public Event getEvent(@PathVariable Long id) {
         return eventService.getById(id);
     }
 
     @GetMapping("/active")
-    public List<Event> active() {
+    public List<Event> getActiveEvents() {
         return eventService.getActiveEvents();
     }
 
