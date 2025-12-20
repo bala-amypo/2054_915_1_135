@@ -10,6 +10,11 @@ public class BroadcastServiceImpl implements BroadcastService {
     private final EventUpdateRepository updateRepo;
     private final SubscriptionRepository subRepo;
     private final BroadcastLogRepository logRepo;
+    @Override
+public List<BroadcastLog> getLogsForUpdate(Long updateId) {
+    return logRepo.findByEventUpdateId(updateId);
+}
+
 
     public BroadcastServiceImpl(EventUpdateRepository u, SubscriptionRepository s, BroadcastLogRepository l) {
         this.updateRepo = u;
