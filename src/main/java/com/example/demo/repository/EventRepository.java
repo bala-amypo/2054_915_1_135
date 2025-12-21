@@ -1,21 +1,11 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.Event;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.entity.*;
+import java.util.*;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface EventRepository {
-
-    Event save(Event event);
-
-    Optional<Event> findById(Long id);
-
-    void delete(Event event);
-
+public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByIsActiveTrue();
-
     List<Event> findByIsActiveTrueAndCategory(String category);
-
     List<Event> findByIsActiveTrueAndLocationContainingIgnoreCase(String location);
 }
