@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "subscriptions")
 public class Subscription {
 
     @Id
@@ -19,38 +18,19 @@ public class Subscription {
 
     private Instant subscribedAt;
 
-    // ===== Lifecycle =====
     @PrePersist
     public void onCreate() {
         this.subscribedAt = Instant.now();
     }
 
-    // ===== Getters & Setters =====
-    public Long getId() {
-        return id;
-    }
+    // getters & setters
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public User getUser() {
-        return user;
-    }
+    public Event getEvent() { return event; }
+    public void setEvent(Event event) { this.event = event; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public Instant getSubscribedAt() {
-        return subscribedAt;
-    }
+    public Instant getSubscribedAt() { return subscribedAt; }
 }

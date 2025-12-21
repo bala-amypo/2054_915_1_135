@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "event_updates")
 public class EventUpdate {
 
     @Id
@@ -14,14 +13,11 @@ public class EventUpdate {
     @ManyToOne
     private Event event;
 
-    private String content;
+    private Instant timestamp;
 
     @Enumerated(EnumType.STRING)
     private SeverityLevel severityLevel;
 
-    private Instant timestamp;
-
-    // ===== Lifecycle =====
     @PrePersist
     public void onCreate() {
         this.timestamp = Instant.now();
@@ -30,40 +26,17 @@ public class EventUpdate {
         }
     }
 
-    // ===== Getters & Setters =====
-    public Long getId() {
-        return id;
-    }
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Event getEvent() { return event; }
+    public void setEvent(Event event) { this.event = event; }
 
-    public Event getEvent() {
-        return event;
-    }
+    public Instant getTimestamp() { return timestamp; }
 
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public SeverityLevel getSeverityLevel() {
-        return severityLevel;
-    }
-
+    public SeverityLevel getSeverityLevel() { return severityLevel; }
     public void setSeverityLevel(SeverityLevel severityLevel) {
         this.severityLevel = severityLevel;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
     }
 }
