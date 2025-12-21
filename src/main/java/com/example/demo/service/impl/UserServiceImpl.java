@@ -1,20 +1,33 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
+
+import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repo;
     private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository r, PasswordEncoder e) {
-        repo = r; encoder = e;
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
+        this.repo = repo;
+        this.encoder = encoder;
     }
 
-    public User register(User u) {
-        if (repo.existsByEmail(u.getEmail()))
+    @Override
+    public User register(User user) {
+        if (repo.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already registered");
-
-        u.setPassword(encoder.encode(u.getPassword()));
-        return repo.save(u);
+        }
+        user.setPassword(encoder.encode(user.getPassword()));
+        return repo.save(user);
     }
 
+    @Override
     public User findByEmail(String email) {
         return repo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
