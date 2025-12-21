@@ -1,32 +1,64 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.BroadcastLog;
+import com.example.demo.entity.DeliveryStatus;
+import com.example.demo.entity.EventUpdate;
+import com.example.demo.entity.Subscription;
+import com.example.demo.repository.BroadcastLogRepository;
+import com.example.demo.repository.EventUpdateRepository;
+import com.example.demo.repository.SubscriptionRepository;
+import com.example.demo.service.BroadcastService;
+
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
 public class BroadcastServiceImpl implements BroadcastService {
 
-    private final EventUpdateRepository updateRepo;
-    private final SubscriptionRepository subRepo;
-    private final BroadcastLogRepository logRepo;
+    private final EventUpdateRepository eventUpdateRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final BroadcastLogRepository broadcastLogRepository;
 
-    public BroadcastServiceImpl(EventUpdateRepository u, SubscriptionRepository s, BroadcastLogRepository l) {
-        updateRepo = u; subRepo = s; logRepo = l;
+    public BroadcastServiceImpl(EventUpdateRepository eventUpdateRepository,
+                                SubscriptionRepository subscriptionRepository,
+                                BroadcastLogRepository broadcastLogRepository) {
+        this.eventUpdateRepository = eventUpdateRepository;
+        this.subscriptionRepository = subscriptionRepository;
+        this.broadcastLogRepository = broadcastLogRepository;
     }
 
+    @Override
     public void broadcastUpdate(Long updateId) {
-        EventUpdate upd = updateRepo.findById(updateId).orElseThrow();
-        for (Subscription s : subRepo.findByEventId(upd.getEvent().getId())) {
+        EventUpdate update = eventUpdateRepository.findById(updateId)
+                .orElseThrow();
+
+        List<Subscription> subscriptions =
+                subscriptionRepository.findByEventId(update.getEvent().getId());
+
+        for (Subscription s : subscriptions) {
             BroadcastLog log = new BroadcastLog();
-            log.setEventUpdate(upd);
+            log.setEventUpdate(update);
             log.setSubscriber(s.getUser());
-            logRepo.save(log);
+            broadcastLogRepository.save(log);
         }
     }
 
-    public List<BroadcastLog> getLogsForUpdate(Long id) {
-        return logRepo.findByEventUpdateId(id);
+    @Override
+    public List<BroadcastLog> getLogsForUpdate(Long updateId) {
+        return broadcastLogRepository.findByEventUpdateId(updateId);
     }
 
+    @Override
     public void recordDelivery(Long updateId, Long userId, boolean success) {
-        for (BroadcastLog log : logRepo.findByEventUpdateId(updateId)) {
+        List<BroadcastLog> logs =
+                broadcastLogRepository.findByEventUpdateId(updateId);
+
+        for (BroadcastLog log : logs) {
             if (log.getSubscriber().getId().equals(userId)) {
-                log.setDeliveryStatus(success ? DeliveryStatus.SENT : DeliveryStatus.FAILED);
-                logRepo.save(log);
+                log.setDeliveryStatus(
+                        success ? DeliveryStatus.SENT : DeliveryStatus.FAILED
+                );
+                broadcastLogRepository.save(log);
             }
         }
     }
