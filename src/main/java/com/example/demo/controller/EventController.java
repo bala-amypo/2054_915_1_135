@@ -37,8 +37,5 @@ public class EventController {
         return eventService.getActiveEvents();
     }
 
-    @PatchMapping("/{id}/deactivate")
-    public void deactivate(@PathVariable Long id) {
-        eventService.deactivateEvent(id);
-    }
+   
 }
