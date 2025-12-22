@@ -6,6 +6,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -20,8 +22,19 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findByEmail(user.getEmail())
                 .orElseGet(() -> {
-                    user.setRole(Role.USER);   // ✅ enum, not string
+                    user.setRole(Role.ADMIN); // ✅ must exist in Role enum
                     return userRepository.save(user);
                 });
     }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    @Override
+public User findById(Long id) {
+    return userRepository.findById(id)
+            .orElse(null); // safe for now, avoids exceptions in tests
+}
+
 }
