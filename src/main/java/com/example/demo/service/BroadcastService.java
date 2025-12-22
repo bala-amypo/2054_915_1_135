@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.BroadcastLog;
 import java.util.List;
-
+@Service
 public interface BroadcastService {
     void broadcastUpdate(Long updateId);
     List<BroadcastLog> getLogsForUpdate(Long updateId);
