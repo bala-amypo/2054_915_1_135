@@ -20,14 +20,19 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public User register(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already registered");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
+   @Override
+public User register(RegisterRequest request) {
+
+    return userRepository.findByEmail(request.getEmail())
+            .orElseGet(() -> {
+                User user = new User();
+                user.setEmail(request.getEmail());
+                user.setPassword(request.getPassword());
+                user.setRole("USER");
+                return userRepository.save(user);
+            });
+}
+
 
     @Override
     public User findByEmail(String email) {
