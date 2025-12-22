@@ -1,17 +1,7 @@
-package com.example.demo.service;
-import org.springframework.stereotype.Service;
-
-
-import com.example.demo.entity.User;
-import java.util.List;
-@Service
 public interface UserService {
-
-    User register(User user);
-
-    User findByEmail(String email);
-
-    User findById(Long id);
-
+    User register(RegisterRequest request);
+    User login(LoginRequest request);
     List<User> getAllUsers();
+    User findById(Long id);
+    User findByEmail(String email);
 }
