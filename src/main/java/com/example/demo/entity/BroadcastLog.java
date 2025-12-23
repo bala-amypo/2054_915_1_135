@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 @Entity
 public class BroadcastLog {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
@@ -17,5 +18,5 @@ public class BroadcastLog {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
 
-    // getters & setters
+    // getters and setters
 }
