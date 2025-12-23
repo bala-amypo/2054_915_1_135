@@ -1,30 +1,20 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 public class EventUpdate {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String message;
 
     @ManyToOne
     private Event event;
 
-    private Instant timestamp;
-
-    @Enumerated(EnumType.STRING)
-    private SeverityLevel severityLevel;
-
-    @PrePersist
-    public void onCreate() {
-        timestamp = Instant.now();
-        if (severityLevel == null) {
-            severityLevel = SeverityLevel.LOW;
-        }
-    }
-
-    // getters and setters
+    public Long getId() { return id; }
+    public String getMessage() { return message; }
+    public Event getEvent() { return event; }
 }

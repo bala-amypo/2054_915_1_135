@@ -1,39 +1,31 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 public class Event {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String description;
     private String location;
     private String category;
-
-    private boolean isActive;
-
-    private Instant createdAt;
-    private Instant lastUpdatedAt;
+    private boolean active;
 
     @ManyToOne
     private User publisher;
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = Instant.now();
-        lastUpdatedAt = Instant.now();
-        isActive = true;
-    }
+    // getters & setters
+    public Long getId() { return id; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public String getLocation() { return location; }
+    public String getCategory() { return category; }
+    public boolean isActive() { return active; }
+    public User getPublisher() { return publisher; }
 
-    @PreUpdate
-    public void onUpdate() {
-        lastUpdatedAt = Instant.now();
-    }
-
-    // getters and setters
+    public void setActive(boolean active) { this.active = active; }
 }

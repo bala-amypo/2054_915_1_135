@@ -1,13 +1,12 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 public class Subscription {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -16,12 +15,9 @@ public class Subscription {
     @ManyToOne
     private Event event;
 
-    private Instant subscribedAt;
+    public User getUser() { return user; }
+    public Event getEvent() { return event; }
 
-    @PrePersist
-    public void onCreate() {
-        subscribedAt = Instant.now();
-    }
-
-    // getters and setters
+    public void setUser(User user) { this.user = user; }
+    public void setEvent(Event event) { this.event = event; }
 }

@@ -6,17 +6,18 @@ import jakarta.persistence.*;
 public class BroadcastLog {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    private EventUpdate eventUpdate;
 
     @ManyToOne
     private User subscriber;
 
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
+    @ManyToOne
+    private EventUpdate eventUpdate;
 
-    // getters and setters
+    private String deliveryStatus;
+
+    public User getSubscriber() { return subscriber; }
+    public void setEventUpdate(EventUpdate eventUpdate) { this.eventUpdate = eventUpdate; }
+    public void setDeliveryStatus(String deliveryStatus) { this.deliveryStatus = deliveryStatus; }
 }

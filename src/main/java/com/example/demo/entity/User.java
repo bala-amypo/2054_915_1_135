@@ -1,30 +1,34 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String username;
     private String email;
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private Instant createdAt;
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = Instant.now();
-        if (role == null) {
-            role = Role.SUBSCRIBER;
-        }
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    // getters and setters
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 }
