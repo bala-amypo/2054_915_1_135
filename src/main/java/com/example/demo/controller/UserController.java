@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +17,23 @@ public class UserController {
         this.userService = userService;
     }
 
+    // 🔹 POST /api/users/register
+    @PostMapping("/register")
+    public User register(@RequestBody RegisterRequest request) {
+        User user = new User();
+        user.setEmail(request.email);
+        user.setPassword(request.password);
+        user.setRole("SUBSCRIBER"); // default as per earlier constraint
+        return userService.registerUser(user);
+    }
+
+    // 🔹 GET /api/users/{id}
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
+    // 🔹 GET /api/users
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
