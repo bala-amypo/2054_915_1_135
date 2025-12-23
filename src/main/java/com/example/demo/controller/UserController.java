@@ -1,12 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
-
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -18,24 +13,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public User createUser(@RequestBody RegisterRequest request) {
-
-        User user = new User();
-        user.setUsername(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-
-        return userService.register(user);
-    }
-
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.findById(id);
-    }
-
     @GetMapping
-    public List<User> getAllUsers() {
+    public Object getAllUsers() {
         return userService.getAllUsers();
     }
 }
