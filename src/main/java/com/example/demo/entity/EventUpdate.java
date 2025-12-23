@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Entity
 public class EventUpdate {
@@ -13,32 +13,31 @@ public class EventUpdate {
     @ManyToOne
     private Event event;
 
-    private String message;
+    private String updateContent;
 
-    private Instant timestamp;
+    // INFO / WARNING / CRITICAL
+    private String updateType;
 
-    @Enumerated(EnumType.STRING)
-    private SeverityLevel severityLevel;
+    private Timestamp postedAt;
 
     @PrePersist
-    public void onCreate() {
-        this.timestamp = Instant.now();
-        if (this.severityLevel == null) {
-            this.severityLevel = SeverityLevel.LOW;
-        }
+    protected void onCreate() {
+        this.postedAt = new Timestamp(System.currentTimeMillis());
     }
 
     // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public String getUpdateContent() { return updateContent; }
+    public void setUpdateContent(String updateContent) { this.updateContent = updateContent; }
 
-    public Instant getTimestamp() { return timestamp; }
-    public SeverityLevel getSeverityLevel() { return severityLevel; }
-    public void setSeverityLevel(SeverityLevel severityLevel) { this.severityLevel = severityLevel; }
+    public String getUpdateType() { return updateType; }
+    public void setUpdateType(String updateType) { this.updateType = updateType; }
+
+    public Timestamp getPostedAt() { return postedAt; }
 }

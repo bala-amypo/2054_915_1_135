@@ -1,9 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Entity
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "event_id"})
+    }
+)
 public class Subscription {
 
     @Id
@@ -16,14 +21,15 @@ public class Subscription {
     @ManyToOne
     private Event event;
 
-    private Instant subscribedAt;
+    private Timestamp subscribedAt;
 
     @PrePersist
-    public void onCreate() {
-        this.subscribedAt = Instant.now();
+    protected void onCreate() {
+        this.subscribedAt = new Timestamp(System.currentTimeMillis());
     }
 
     // getters & setters
+
     public Long getId() { return id; }
 
     public User getUser() { return user; }
@@ -32,5 +38,5 @@ public class Subscription {
     public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
 
-    public Instant getSubscribedAt() { return subscribedAt; }
+    public Timestamp getSubscribedAt() { return subscribedAt; }
 }

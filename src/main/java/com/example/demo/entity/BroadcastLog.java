@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 public class BroadcastLog {
@@ -15,10 +16,21 @@ public class BroadcastLog {
     @ManyToOne
     private User subscriber;
 
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
+    // PENDING / SENT / FAILED
+    private String deliveryStatus;
+
+    private Timestamp sentAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.sentAt = new Timestamp(System.currentTimeMillis());
+        if (this.deliveryStatus == null) {
+            this.deliveryStatus = "SENT";
+        }
+    }
 
     // getters & setters
+
     public Long getId() { return id; }
 
     public EventUpdate getEventUpdate() { return eventUpdate; }
@@ -27,6 +39,8 @@ public class BroadcastLog {
     public User getSubscriber() { return subscriber; }
     public void setSubscriber(User subscriber) { this.subscriber = subscriber; }
 
-    public DeliveryStatus getDeliveryStatus() { return deliveryStatus; }
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) { this.deliveryStatus = deliveryStatus; }
+    public String getDeliveryStatus() { return deliveryStatus; }
+    public void setDeliveryStatus(String deliveryStatus) { this.deliveryStatus = deliveryStatus; }
+
+    public Timestamp getSentAt() { return sentAt; }
 }

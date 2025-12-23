@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Entity
 public class Event {
@@ -11,31 +11,30 @@ public class Event {
     private Long id;
 
     private String title;
+
     private String description;
+
     private String location;
+
     private String category;
-
-    private boolean isActive = true;
-
-    private Instant createdAt;
-    private Instant lastUpdatedAt;
 
     @ManyToOne
     private User publisher;
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = Instant.now();
-        this.lastUpdatedAt = Instant.now();
-        this.isActive = true;
-    }
+    private Boolean isActive = true;
 
-    @PreUpdate
-    public void onUpdate() {
-        this.lastUpdatedAt = Instant.now();
+    private Timestamp createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
     }
 
     // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -51,12 +50,11 @@ public class Event {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
-
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getLastUpdatedAt() { return lastUpdatedAt; }
-
     public User getPublisher() { return publisher; }
     public void setPublisher(User publisher) { this.publisher = publisher; }
+
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean active) { isActive = active; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
 }
