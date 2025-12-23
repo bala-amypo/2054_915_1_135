@@ -7,35 +7,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subscriptions")
+@RequestMapping("/subscriptions")
 public class SubscriptionController {
 
-    private final SubscriptionService subscriptionService;
+    private final SubscriptionService service;
 
-    public SubscriptionController(SubscriptionService subscriptionService) {
-        this.subscriptionService = subscriptionService;
+    public SubscriptionController(SubscriptionService service) {
+        this.service = service;
     }
 
-    @PostMapping("/{eventId}")
-    public Subscription subscribe(@PathVariable Long eventId,
-                                  @RequestParam Long userId) {
-        return subscriptionService.subscribe(userId, eventId);
+    @PostMapping("/{userId}/{eventId}")
+    public Subscription subscribe(@PathVariable Long userId,
+                                  @PathVariable Long eventId) {
+        return service.subscribe(userId, eventId);
     }
 
-    @DeleteMapping("/{eventId}")
-    public void unsubscribe(@PathVariable Long eventId,
-                            @RequestParam Long userId) {
-        subscriptionService.unsubscribe(userId, eventId);
+    @DeleteMapping("/{userId}/{eventId}")
+    public void unsubscribe(@PathVariable Long userId,
+                            @PathVariable Long eventId) {
+        service.unsubscribe(userId, eventId);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Subscription> getUserSubscriptions(@PathVariable Long userId) {
-        return subscriptionService.getUserSubscriptions(userId);
-    }
-
-    @GetMapping("/check/{userId}/{eventId}")
-    public boolean check(@PathVariable Long userId,
-                         @PathVariable Long eventId) {
-        return subscriptionService.isSubscribed(userId, eventId);
+    @GetMapping("/{userId}")
+    public List<Subscription> list(@PathVariable Long userId) {
+        return service.getUserSubscriptions(userId);
     }
 }

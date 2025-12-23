@@ -7,22 +7,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/broadcasts")
+@RequestMapping("/broadcast")
 public class BroadcastController {
 
-    private final BroadcastService broadcastService;
+    private final BroadcastService service;
 
-    public BroadcastController(BroadcastService broadcastService) {
-        this.broadcastService = broadcastService;
+    public BroadcastController(BroadcastService service) {
+        this.service = service;
     }
 
-    @PostMapping("/trigger/{updateId}")
-    public void triggerBroadcast(@PathVariable Long updateId) {
-        broadcastService.broadcastUpdate(updateId);
+    @PostMapping("/{updateId}")
+    public void broadcast(@PathVariable Long updateId) {
+        service.broadcastUpdate(updateId);
     }
 
     @GetMapping("/logs/{updateId}")
-    public List<BroadcastLog> getLogs(@PathVariable Long updateId) {
-        return broadcastService.getLogsForUpdate(updateId);
+    public List<BroadcastLog> logs(@PathVariable Long updateId) {
+        return service.getLogsForUpdate(updateId);
     }
 }
