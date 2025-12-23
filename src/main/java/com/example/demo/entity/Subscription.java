@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 
 @Entity
 public class Subscription {
@@ -15,9 +16,21 @@ public class Subscription {
     @ManyToOne
     private Event event;
 
-    public User getUser() { return user; }
-    public Event getEvent() { return event; }
+    private Instant subscribedAt;
 
+    @PrePersist
+    public void onCreate() {
+        this.subscribedAt = Instant.now();
+    }
+
+    // getters & setters
+    public Long getId() { return id; }
+
+    public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
+
+    public Instant getSubscribedAt() { return subscribedAt; }
 }

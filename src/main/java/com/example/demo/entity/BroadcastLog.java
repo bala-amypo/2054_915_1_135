@@ -10,14 +10,23 @@ public class BroadcastLog {
     private Long id;
 
     @ManyToOne
-    private User subscriber;
-
-    @ManyToOne
     private EventUpdate eventUpdate;
 
-    private String deliveryStatus;
+    @ManyToOne
+    private User subscriber;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
+
+    // getters & setters
+    public Long getId() { return id; }
+
+    public EventUpdate getEventUpdate() { return eventUpdate; }
+    public void setEventUpdate(EventUpdate eventUpdate) { this.eventUpdate = eventUpdate; }
 
     public User getSubscriber() { return subscriber; }
-    public void setEventUpdate(EventUpdate eventUpdate) { this.eventUpdate = eventUpdate; }
-    public void setDeliveryStatus(String deliveryStatus) { this.deliveryStatus = deliveryStatus; }
+    public void setSubscriber(User subscriber) { this.subscriber = subscriber; }
+
+    public DeliveryStatus getDeliveryStatus() { return deliveryStatus; }
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) { this.deliveryStatus = deliveryStatus; }
 }
