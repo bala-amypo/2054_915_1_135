@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 
@@ -21,10 +22,9 @@ public class UserController {
     public User createUser(@RequestBody RegisterRequest request) {
 
         User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setUsername(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
 
         return userService.register(user);
     }

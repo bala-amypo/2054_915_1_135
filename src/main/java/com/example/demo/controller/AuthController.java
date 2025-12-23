@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.*;
+import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
@@ -25,10 +24,9 @@ public class AuthController {
     public ApiResponse register(@RequestBody RegisterRequest request) {
 
         User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setUsername(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
 
         userService.register(user);
 
@@ -42,8 +40,8 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(
                 user.getId(),
-                user.getEmail(),
-                user.getRole()
+                user.getUsername(),
+                user.getRole().name()
         );
 
         return new ApiResponse(true, token);
