@@ -7,35 +7,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/events")
 public class EventController {
 
-    private final EventService eventService;
+    private final EventService service;
 
-    public EventController(EventService eventService) {
-        this.eventService = eventService;
+    public EventController(EventService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public Event createEvent(@RequestBody Event event) {
-        return eventService.createEvent(event);
+    public Event create(@RequestBody Event e) {
+        return service.createEvent(e);
     }
 
     @PutMapping("/{id}")
-    public Event updateEvent(@PathVariable Long id,
-                             @RequestBody Event event) {
-        return eventService.updateEvent(id, event);
-    }
-
-    @GetMapping("/{id}")
-    public Event getEvent(@PathVariable Long id) {
-        return eventService.getById(id);
+    public Event update(@PathVariable Long id,
+                        @RequestBody Event e) {
+        return service.updateEvent(id, e);
     }
 
     @GetMapping("/active")
-    public List<Event> getActiveEvents() {
-        return eventService.getActiveEvents();
+    public List<Event> active() {
+        return service.getActiveEvents();
     }
 
-   
+    @DeleteMapping("/{id}")
+    public void deactivate(@PathVariable Long id) {
+        service.deactivateEvent(id);
+    }
 }

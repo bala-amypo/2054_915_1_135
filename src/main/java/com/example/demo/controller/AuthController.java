@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
-import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.*;
 import com.example.demo.entity.User;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,19 +12,37 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService,
+                          PasswordEncoder encoder,
+                          JwtUtil jwtUtil) {
         this.userService = userService;
+        this.encoder = encoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
-    public ApiResponse register(@RequestBody RegisterRequest request) {
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+    public User register(@RequestBody RegisterRequest req) {
+        User u = new User();
+        u.setEmail(req.email);
+        u.setPassword(req.password);
+        return userService.register(u);
+    }
 
-        return new ApiResponse(true, "User registered", userService.register(user));
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequest req) {
+        User user = userService.findByEmail(req.email);
+
+        if (!encoder.matches(req.password, user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        return jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole().name()
+        );
     }
 }
