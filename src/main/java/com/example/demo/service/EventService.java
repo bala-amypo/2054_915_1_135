@@ -8,11 +8,11 @@ public interface EventService {
 
     Event createEvent(Event event);
 
-    Event updateEvent(Long id, Event updated);
+    Event updateEvent(Long id, Event event);
 
-    void deactivateEvent(Long id);
+    Event getEventById(Long id);
 
     List<Event> getActiveEvents();
 
-    Event getById(Long id);
+    void deactivateEvent(Long id);
 }

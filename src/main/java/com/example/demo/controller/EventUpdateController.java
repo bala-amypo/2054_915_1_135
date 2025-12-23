@@ -7,17 +7,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/updates")
+@RequestMapping("/api/updates")
 public class EventUpdateController {
 
-    private final EventUpdateService service;
+    private final EventUpdateService eventUpdateService;
 
-    public EventUpdateController(EventUpdateService service) {
-        this.service = service;
+    public EventUpdateController(EventUpdateService eventUpdateService) {
+        this.eventUpdateService = eventUpdateService;
     }
 
-    @GetMapping("/{eventId}")
-    public List<EventUpdate> list(@PathVariable Long eventId) {
-        return service.getUpdatesForEvent(eventId);
+    @PostMapping
+    public EventUpdate publish(@RequestBody EventUpdate update) {
+        return eventUpdateService.publishUpdate(update);
+    }
+
+    @GetMapping("/event/{eventId}")
+    public List<EventUpdate> getForEvent(@PathVariable Long eventId) {
+        return eventUpdateService.getUpdatesForEvent(eventId);
+    }
+
+    @GetMapping("/{id}")
+    public EventUpdate getById(@PathVariable Long id) {
+        return eventUpdateService.getUpdateById(id);
     }
 }

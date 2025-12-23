@@ -6,9 +6,7 @@ import java.util.List;
 
 public interface BroadcastService {
 
-    void broadcastUpdate(Long updateId);
-
-    void recordDelivery(Long updateId, Long userId, boolean success);
+    void triggerBroadcast(Long updateId);
 
     List<BroadcastLog> getLogsForUpdate(Long updateId);
 }

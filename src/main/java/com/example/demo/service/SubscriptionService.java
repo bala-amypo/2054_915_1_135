@@ -10,7 +10,7 @@ public interface SubscriptionService {
 
     void unsubscribe(Long userId, Long eventId);
 
-    boolean isSubscribed(Long userId, Long eventId);
+    List<Subscription> getSubscriptionsForUser(Long userId);
 
-    List<Subscription> getUserSubscriptions(Long userId);
+    boolean checkSubscription(Long userId, Long eventId);
 }
