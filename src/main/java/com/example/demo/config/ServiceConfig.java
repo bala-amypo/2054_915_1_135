@@ -39,7 +39,7 @@ public class ServiceConfig {
                 eventRepository
         );
     }
-
+ 
     @Bean
     public BroadcastService broadcastService(
             BroadcastLogRepository logRepository,
