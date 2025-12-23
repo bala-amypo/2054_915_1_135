@@ -7,10 +7,8 @@ import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.EventService;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Service
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -25,24 +23,25 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event createEvent(Event event) {
         User publisher = userRepository.findById(event.getPublisher().getId())
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (publisher.getRole() != Role.PUBLISHER &&
-            publisher.getRole() != Role.ADMIN) {
-            throw new RuntimeException("Only PUBLISHER or ADMIN");
+        if (publisher.getRole() != Role.PUBLISHER && publisher.getRole() != Role.ADMIN) {
+            throw new RuntimeException("Only PUBLISHER or ADMIN can create events");
         }
+
+        event.setPublisher(publisher);
         return eventRepository.save(event);
     }
 
     @Override
-    public Event updateEvent(Long id, Event event) {
+    public Event updateEvent(Long id, Event updated) {
         Event existing = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        existing.setTitle(event.getTitle());
-        existing.setDescription(event.getDescription());
-        existing.setLocation(event.getLocation());
-        existing.setCategory(event.getCategory());
+        existing.setTitle(updated.getTitle());
+        existing.setDescription(updated.getDescription());
+        existing.setLocation(updated.getLocation());
+        existing.setCategory(updated.getCategory());
 
         return eventRepository.save(existing);
     }
@@ -56,13 +55,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getById(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+    public List<Event> getActiveEvents() {
+        return eventRepository.findByIsActiveTrue();
     }
 
     @Override
-    public List<Event> getActiveEvents() {
-        return eventRepository.findByIsActiveTrue();
+    public Event getById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
     }
 }

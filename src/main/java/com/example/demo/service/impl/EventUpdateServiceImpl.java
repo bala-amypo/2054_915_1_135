@@ -1,19 +1,21 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.EventUpdate;
+import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.service.EventUpdateService;
-import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+
 public class EventUpdateServiceImpl implements EventUpdateService {
 
-    @Override
-    public EventUpdate publishUpdate(EventUpdate update) {
-        return update;
+    private final EventUpdateRepository repository;
+
+    public EventUpdateServiceImpl(EventUpdateRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public EventUpdate getUpdateById(Long id) {
-        return null;
+    public List<EventUpdate> getUpdatesForEvent(Long eventId) {
+        return repository.findByEventIdOrderByTimestampAsc(eventId);
     }
 }

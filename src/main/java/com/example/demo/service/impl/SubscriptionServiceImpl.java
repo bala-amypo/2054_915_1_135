@@ -8,10 +8,8 @@ import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.SubscriptionService;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Service
 public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
@@ -32,8 +30,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new RuntimeException("Already subscribed");
         }
 
-        User user = userRepository.findById(userId).orElseThrow();
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
 
         Subscription subscription = new Subscription();
         subscription.setUser(user);
@@ -44,11 +45,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void unsubscribe(Long userId, Long eventId) {
-        Subscription subscription = subscriptionRepository
+        Subscription sub = subscriptionRepository
                 .findByUserIdAndEventId(userId, eventId)
                 .orElseThrow(() -> new RuntimeException("Subscription not found"));
 
-        subscriptionRepository.delete(subscription);
+        subscriptionRepository.delete(sub);
     }
 
     @Override
