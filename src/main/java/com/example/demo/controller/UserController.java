@@ -17,15 +17,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 🔹 POST /api/users/register
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
-        User user = new User();
-        user.setEmail(request.email);
-        user.setPassword(request.password);
-        user.setRole("SUBSCRIBER"); // default as per earlier constraint
-        return userService.registerUser(user);
-    }
+public User register(@RequestBody RegisterRequest request) {
+
+    User user = new User();
+
+    user.setFullName(request.fullName);
+    user.setEmail(request.email);
+    user.setPassword(request.password);
+    user.setRole(request.role);
+
+    return userService.registerUser(user);
+}
+
 
     // 🔹 GET /api/users/{id}
     @GetMapping("/{id}")
