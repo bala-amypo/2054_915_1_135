@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
-import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +13,19 @@ public class AuthController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     public AuthController(UserService userService,
-                          PasswordEncoder passwordEncoder,
-                          JwtUtil jwtUtil) {
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request) {
         User user = new User();
-        user.setFullName(request.fullName);
         user.setEmail(request.email);
         user.setPassword(request.password);
-        user.setRole(request.role);
+        user.setRole("SUBSCRIBER");
         return userService.registerUser(user);
     }
 
@@ -46,10 +41,6 @@ public class AuthController {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
-        return jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
+        return "DUMMY_LOGIN_SUCCESS";
     }
 }
