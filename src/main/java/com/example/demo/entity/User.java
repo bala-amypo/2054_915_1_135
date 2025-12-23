@@ -1,15 +1,12 @@
+
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(
-    name = "users",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-    }
-)
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 
     @Id
@@ -21,9 +18,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
 
-    // ADMIN / PUBLISHER / SUBSCRIBER
     private String role;
 
     private Timestamp createdAt;
@@ -32,10 +29,7 @@ public class User {
     protected void onCreate() {
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
-
-    // ---------- Getters & Setters ----------
-
-    public Long getId() {
+     public Long getId() {
         return id;
     }
 
@@ -78,4 +72,5 @@ public class User {
     public Timestamp getCreatedAt() {
         return createdAt;
     }
+    
 }
