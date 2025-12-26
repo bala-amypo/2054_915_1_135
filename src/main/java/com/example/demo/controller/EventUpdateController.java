@@ -10,24 +10,24 @@ import java.util.List;
 @RequestMapping("/api/updates")
 public class EventUpdateController {
 
-    private final EventUpdateService eventUpdateService;
+    private final EventUpdateService service;
 
-    public EventUpdateController(EventUpdateService eventUpdateService) {
-        this.eventUpdateService = eventUpdateService;
+    public EventUpdateController(EventUpdateService service) {
+        this.service = service;
     }
 
     @PostMapping
     public EventUpdate publish(@RequestBody EventUpdate update) {
-        return eventUpdateService.publishUpdate(update);
+        return service.publishUpdate(update);
     }
 
     @GetMapping("/event/{eventId}")
-    public List<EventUpdate> getForEvent(@PathVariable Long eventId) {
-        return eventUpdateService.getUpdatesForEvent(eventId);
+    public List<EventUpdate> byEvent(@PathVariable Long eventId) {
+        return service.getUpdatesForEvent(eventId);
     }
 
     @GetMapping("/{id}")
-    public EventUpdate getById(@PathVariable Long id) {
-        return eventUpdateService.getUpdateById(id);
+    public EventUpdate get(@PathVariable Long id) {
+        return service.getUpdateById(id);
     }
 }

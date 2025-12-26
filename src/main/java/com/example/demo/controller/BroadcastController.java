@@ -10,19 +10,19 @@ import java.util.List;
 @RequestMapping("/api/broadcasts")
 public class BroadcastController {
 
-    private final BroadcastService broadcastService;
+    private final BroadcastService service;
 
-    public BroadcastController(BroadcastService broadcastService) {
-        this.broadcastService = broadcastService;
+    public BroadcastController(BroadcastService service) {
+        this.service = service;
     }
 
     @PostMapping("/trigger/{updateId}")
     public void trigger(@PathVariable Long updateId) {
-        broadcastService.triggerBroadcast(updateId);
+        service.broadcastUpdate(updateId);
     }
 
     @GetMapping("/logs/{updateId}")
-    public List<BroadcastLog> getLogs(@PathVariable Long updateId) {
-        return broadcastService.getLogsForUpdate(updateId);
+    public List<BroadcastLog> logs(@PathVariable Long updateId) {
+        return service.getLogsForUpdate(updateId);
     }
 }
