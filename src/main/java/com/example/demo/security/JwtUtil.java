@@ -1,32 +1,50 @@
 package com.example.demo.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private final String secret = "secretkey123";
-    private final long expiration = 1000 * 60 * 60;
+    private final String SECRET = "this_is_a_very_secure_secret_key_for_jwt_123";
+    private final long EXPIRATION = 1000 * 60 * 60; // 1 hour
 
-    public String generateToken(long userId, String username, String role) {
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+
+    public String generateToken(long userId, String email, String role) {
+
         return Jwts.builder()
-                .setSubject(username)
                 .claim("userId", userId)
+                .claim("email", email)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        return getClaims(token).get("userId", Long.class);
+    }
+
+    public String getEmailFromToken(String token) {
+        return getClaims(token).get("email", String.class);
+    }
+
+    public String getRoleFromToken(String token) {
+        return getClaims(token).get("role", String.class);
     }
 
     public boolean validateToken(String token) {
@@ -36,17 +54,5 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public String getUsernameFromToken(String token) {
-        return getClaims(token).getSubject();
-    }
-
-    public Long getUserIdFromToken(String token) {
-        return getClaims(token).get("userId", Long.class);
-    }
-
-    public String getRoleFromToken(String token) {
-        return getClaims(token).get("role", String.class);
     }
 }
