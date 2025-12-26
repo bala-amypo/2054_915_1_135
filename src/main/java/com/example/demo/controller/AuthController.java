@@ -1,65 +1,42 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public AuthController(AuthenticationManager authenticationManager,
-                          UserService userService,
-                          JwtUtil jwtUtil) {
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
+    public AuthController(UserRepository userRepository, JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }
 
-   @PostMapping("/register")
-public ApiResponse register(@RequestBody RegisterRequest request) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String email) {
 
-    User user = new User();
-    user.setFullName(request.getFullName());
-    user.setEmail(request.getEmail());
-    user.setPassword(request.getPassword());
-    user.setRole(Role.SUBSCRIBER);
+        Optional<User> optional = userRepository.findByEmail(email);
 
-    User saved = userService.register(user);
+        if (optional.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
 
-    return new ApiResponse(true, "Registered successfully", saved);
-}
+        User user = optional.get();
 
-@PostMapping("/login")
-public ApiResponse login(@RequestBody LoginRequest loginRequest) {
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole().name()
+        );
 
-    Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(),
-                    loginRequest.getPassword()
-            )
-    );
-
-   String token = jwtUtil.generateToken(
-        user.getId(),
-        user.getEmail(),
-        user.getRole().name()
-);
-
-
-    return new ApiResponse(true, "Login successful", token);
-}
-
+        return ResponseEntity.ok(token);
+    }
 }
