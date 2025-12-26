@@ -34,6 +34,7 @@ public class EventServiceImpl implements EventService {
         }
 
         event.setActive(true);
+
         return eventRepository.save(event);
     }
 
