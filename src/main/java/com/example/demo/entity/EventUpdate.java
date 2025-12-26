@@ -21,25 +21,60 @@ public class EventUpdate {
 
     private Instant timestamp;
 
-    @PrePersist
-    public void onCreate() {
-        this.timestamp = Instant.now();
-        if (this.severityLevel == null) {
-            this.severityLevel = SeverityLevel.LOW;
-        }
+    public EventUpdate() {
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public EventUpdate(Event event, String updateContent, SeverityLevel severityLevel) {
+        this.event = event;
+        this.updateContent = updateContent;
+        this.severityLevel = severityLevel;
+    }
 
-    public Event getEvent() { return event; }
-    public void setEvent(Event event) { this.event = event; }
+    @PrePersist
+    public void onCreate() {
+        if (severityLevel == null) {
+            severityLevel = SeverityLevel.LOW;
+        }
+        this.timestamp = Instant.now();
+    }
 
-    public String getUpdateContent() { return updateContent; }
-    public void setUpdateContent(String updateContent) { this.updateContent = updateContent; }
+    public Long getId() {
+        return id;
+    }
 
-    public SeverityLevel getSeverityLevel() { return severityLevel; }
-    public void setSeverityLevel(SeverityLevel severityLevel) { this.severityLevel = severityLevel; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Instant getTimestamp() { return timestamp; }
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public String getUpdateContent() {
+        return updateContent;
+    }
+
+    public void setUpdateContent(String updateContent) {
+        this.updateContent = updateContent;
+    }
+
+    public SeverityLevel getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(SeverityLevel severityLevel) {
+        this.severityLevel = severityLevel;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Instant timestamp) {
+        this.timestamp = timestamp;
+    }
 }

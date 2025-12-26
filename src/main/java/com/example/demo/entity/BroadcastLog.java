@@ -18,25 +18,62 @@ public class BroadcastLog {
     private User subscriber;
 
     @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
+    private DeliveryStatus deliveryStatus;
 
     private Instant sentAt;
+
+    public BroadcastLog() {
+        this.deliveryStatus = DeliveryStatus.SENT;
+    }
+
+    public BroadcastLog(EventUpdate eventUpdate, User subscriber, DeliveryStatus deliveryStatus) {
+        this.eventUpdate = eventUpdate;
+        this.subscriber = subscriber;
+        this.deliveryStatus = deliveryStatus;
+    }
 
     @PrePersist
     public void onCreate() {
         this.sentAt = Instant.now();
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public EventUpdate getEventUpdate() { return eventUpdate; }
-    public void setEventUpdate(EventUpdate eventUpdate) { this.eventUpdate = eventUpdate; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public User getSubscriber() { return subscriber; }
-    public void setSubscriber(User subscriber) { this.subscriber = subscriber; }
+    public EventUpdate getEventUpdate() {
+        return eventUpdate;
+    }
 
-    public DeliveryStatus getDeliveryStatus() { return deliveryStatus; }
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) { this.deliveryStatus = deliveryStatus; }
+    public void setEventUpdate(EventUpdate eventUpdate) {
+        this.eventUpdate = eventUpdate;
+    }
 
-    public Instant getSentAt() { return sentAt; }
+    public User getSubscriber() {
+        return subscriber;
+    }
+
+    public void setSubscriber(User subscriber) {
+        this.subscriber = subscriber;
+    }
+
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
+    public Instant getSentAt() {
+        return sentAt;
+    }
+
+    public void setSentAt(Instant sentAt) {
+        this.sentAt = sentAt;
+    }
 }

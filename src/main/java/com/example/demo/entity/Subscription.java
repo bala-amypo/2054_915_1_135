@@ -19,18 +19,48 @@ public class Subscription {
 
     private Instant subscribedAt;
 
+    public Subscription() {
+    }
+
+    public Subscription(User user, Event event) {
+        this.user = user;
+        this.event = event;
+    }
+
     @PrePersist
     public void onCreate() {
         this.subscribedAt = Instant.now();
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Event getEvent() { return event; }
-    public void setEvent(Event event) { this.event = event; }
+    public User getUser() {
+        return user;
+    }
 
-    public Instant getSubscribedAt() { return subscribedAt; }
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public Instant getSubscribedAt() {
+        return subscribedAt;
+    }
+
+    public void setSubscribedAt(Instant subscribedAt) {
+        this.subscribedAt = subscribedAt;
+    }
 }
