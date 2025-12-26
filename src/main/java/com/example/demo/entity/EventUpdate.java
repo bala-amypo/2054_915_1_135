@@ -11,45 +11,27 @@ public class EventUpdate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String message;
-
-    @Enumerated(EnumType.STRING)
-    private SeverityLevel severity;
-
-    private LocalDateTime createdAt;
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
 
-    public EventUpdate() {}
+    private String message;
+
+    @Enumerated(EnumType.STRING)
+    private SeverityLevel severityLevel;
+
+    private LocalDateTime timestamp;
+
+    public EventUpdate() {
+        this.timestamp = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public SeverityLevel getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(SeverityLevel severity) {
-        this.severity = severity;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Event getEvent() {
@@ -60,8 +42,27 @@ public class EventUpdate {
         this.event = event;
     }
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public SeverityLevel getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(SeverityLevel severityLevel) {
+        this.severityLevel = severityLevel;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

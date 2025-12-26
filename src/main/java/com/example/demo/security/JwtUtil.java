@@ -3,42 +3,42 @@ package com.example.demo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtUtil {
 
-    private static final long EXPIRATION = 1000 * 60 * 60; // 1 hour
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private String secret;
+    private int expiryMinutes;
 
-    public String generateToken(long userId, String username, String role) {
+    public JwtUtil() {
+        // default for Spring
+        this.secret = "defaultSecretKey";
+        this.expiryMinutes = 60;
+    }
+
+    public JwtUtil(String secret, int expiryMinutes) {
+        this.secret = secret;
+        this.expiryMinutes = expiryMinutes;
+    }
+
+    public String generateToken(String username) {
+        long now = System.currentTimeMillis();
+        long expiry = now + (expiryMinutes * 60_000L);
+
         return Jwts.builder()
-                .claim("userId", userId)
-                .claim("username", username)
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(key)
+                .setSubject(username)
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(expiry))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return getAllClaims(token).get("username", String.class);
-    }
-
-    public Long getUserIdFromToken(String token) {
-        return getAllClaims(token).get("userId", Long.class);
-    }
-
-    public String getRoleFromToken(String token) {
-        return getAllClaims(token).get("role", String.class);
-    }
-
-    public boolean isTokenValid(String token) {
+    public Boolean validateToken(String token) {
         try {
             getAllClaims(token);
             return true;
@@ -47,11 +47,19 @@ public class JwtUtil {
         }
     }
 
+    public String getUsernameFromToken(String token) {
+        return getClaim(token, Claims::getSubject);
+    }
+
     private Claims getAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
+        return Jwts.parser()
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private <T> T getClaim(String token, Function<Claims, T> resolver) {
+        Claims claims = getAllClaims(token);
+        return resolver.apply(claims);
     }
 }
