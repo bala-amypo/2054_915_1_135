@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,9 +18,12 @@ public class Subscription {
     @ManyToOne
     private Event event;
 
-    private LocalDateTime subscribedAt;
+    private LocalDateTime createdAt;
 
-    public Subscription() {}
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -39,14 +43,5 @@ public class Subscription {
 
     public void setEvent(Event event) {
         this.event = event;
-    }
-
-    public LocalDateTime getSubscribedAt() {
-        return subscribedAt;
-    }
-
-    @PrePersist
-    public void setSubscribedAt() {
-        this.subscribedAt = LocalDateTime.now();
     }
 }

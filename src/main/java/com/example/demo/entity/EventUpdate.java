@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,36 +12,26 @@ public class EventUpdate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String message;
+
+    private LocalDateTime timestamp;
+
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
 
-    private String message;
+    public EventUpdate() {}
 
-    @Enumerated(EnumType.STRING)
-    private SeverityLevel severityLevel;
-
-    private LocalDateTime timestamp;
-
-    public EventUpdate() {
-        this.timestamp = LocalDateTime.now();
+    @PrePersist
+    public void onCreate() {
+        timestamp = LocalDateTime.now();
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
+    public void setId(Long id) { this.id = id; }
 
     public String getMessage() {
         return message;
@@ -50,19 +41,15 @@ public class EventUpdate {
         this.message = message;
     }
 
-    public SeverityLevel getSeverityLevel() {
-        return severityLevel;
-    }
-
-    public void setSeverityLevel(SeverityLevel severityLevel) {
-        this.severityLevel = severityLevel;
-    }
-
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

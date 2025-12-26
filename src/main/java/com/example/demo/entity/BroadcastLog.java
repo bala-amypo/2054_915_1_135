@@ -10,11 +10,15 @@ public class BroadcastLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long eventUpdateId;
+    @ManyToOne
+    @JoinColumn(name = "event_update_id")
+    private EventUpdate eventUpdate;
 
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "subscriber_id")
+    private User subscriber;
 
-    private boolean delivered;
+    private String deliveryStatus;
 
     public BroadcastLog() {}
 
@@ -22,27 +26,31 @@ public class BroadcastLog {
         return id;
     }
 
-    public Long getEventUpdateId() {
-        return eventUpdateId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setEventUpdateId(Long eventUpdateId) {
-        this.eventUpdateId = eventUpdateId;
+    public EventUpdate getEventUpdate() {
+        return eventUpdate;
     }
 
-    public Long getUserId() {
-        return userId;
+    public void setEventUpdate(EventUpdate eventUpdate) {
+        this.eventUpdate = eventUpdate;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public User getSubscriber() {
+        return subscriber;
     }
 
-    public boolean isDelivered() {
-        return delivered;
+    public void setSubscriber(User subscriber) {
+        this.subscriber = subscriber;
     }
 
-    public void setDelivered(boolean delivered) {
-        this.delivered = delivered;
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 }

@@ -1,7 +1,10 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.BroadcastLog;
+import com.example.demo.entity.EventUpdate;
+import com.example.demo.entity.User;
 import com.example.demo.repository.BroadcastLogRepository;
+import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.service.BroadcastService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,35 +16,27 @@ import java.util.List;
 public class BroadcastServiceImpl implements BroadcastService {
 
     @Autowired
+    private BroadcastLogRepository broadcastLogRepository;
+
+    @Autowired
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    private BroadcastLogRepository broadcastLogRepository;
+    private EventUpdateRepository eventUpdateRepository;
+
+    public BroadcastServiceImpl() {}
 
     @Override
-    public void broadcastUpdate(long eventUpdateId, EventUpdate update) {
+    public void broadcastUpdate(long updateId, EventUpdate update) {
+        List<User> subscribers = subscriptionRepository.findSubscribersByEvent(update.getEvent().getId());
 
-        List<Subscription> subscribers =
-                subscriptionRepository.findByEventId(update.getEvent().getId());
+        for (User subscriber : subscribers) {
+            BroadcastLog log = new BroadcastLog();
+            log.setEventUpdate(update);
+            log.setSubscriber(subscriber);
+            log.setDeliveryStatus("DELIVERED");
 
-        for (Subscription s : subscribers) {
-            recordDelivery(eventUpdateId, s.getUser().getId(), true);
+            broadcastLogRepository.save(log);
         }
-    }
-
-    @Override
-    public BroadcastLog recordDelivery(long eventUpdateId, long userId, boolean delivered) {
-
-        BroadcastLog log = new BroadcastLog();
-        log.setEventUpdateId(eventUpdateId);
-        log.setUserId(userId);
-        log.setDelivered(delivered);
-
-        return broadcastLogRepository.save(log);
-    }
-
-    @Override
-    public List<BroadcastLog> getLogsForUpdate(long eventUpdateId) {
-        return broadcastLogRepository.findByEventUpdateId(eventUpdateId);
     }
 }
