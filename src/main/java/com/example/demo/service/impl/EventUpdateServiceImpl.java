@@ -13,18 +13,22 @@ import java.util.List;
 @Service
 public class EventUpdateServiceImpl implements EventUpdateService {
 
-    private final EventUpdateRepository eventUpdateRepository;
-    private final EventRepository eventRepository;
+    private EventUpdateRepository eventUpdateRepository;
+    private EventRepository eventRepository;
 
-    // constructor needed by tests
-    public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository) {
-        this.eventUpdateRepository = eventUpdateRepository;
-        this.eventRepository = null;
+    // ***** REQUIRED DEFAULT CONSTRUCTOR FOR SPRING *****
+    public EventUpdateServiceImpl() {
     }
 
-    // constructor used by Spring
+    // ***** REQUIRED BY TESTS (manual creation using only repo) *****
+    public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository) {
+        this.eventUpdateRepository = eventUpdateRepository;
+    }
+
+    // ***** USED BY SPRING NORMAL AUTOWIRING *****
     public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository,
                                   EventRepository eventRepository) {
+
         this.eventUpdateRepository = eventUpdateRepository;
         this.eventRepository = eventRepository;
     }
