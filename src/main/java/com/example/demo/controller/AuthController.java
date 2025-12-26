@@ -28,32 +28,33 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/register")
-    public ApiResponse<User> register(@RequestBody RegisterRequest request) {
+   @PostMapping("/register")
+public ApiResponse register(@RequestBody RegisterRequest request) {
 
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(Role.SUBSCRIBER);
+    User user = new User();
+    user.setFullName(request.getFullName());
+    user.setEmail(request.getEmail());
+    user.setPassword(request.getPassword());
+    user.setRole(Role.SUBSCRIBER);
 
-        User saved = userService.register(user);
+    User saved = userService.register(user);
 
-        return new ApiResponse<>(true, "Registered successfully", saved);
-    }
+    return new ApiResponse(true, "Registered successfully", saved);
+}
 
-    @PostMapping("/login")
-    public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) {
+@PostMapping("/login")
+public ApiResponse login(@RequestBody LoginRequest loginRequest) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+    Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(),
+                    loginRequest.getPassword()
+            )
+    );
 
-        String token = jwtUtil.generateToken(authentication.getName());
+    String token = jwtUtil.generateToken(authentication.getName());
 
-        return new ApiResponse<>(true, "Login successful", token);
-    }
+    return new ApiResponse(true, "Login successful", token);
+}
+
 }
