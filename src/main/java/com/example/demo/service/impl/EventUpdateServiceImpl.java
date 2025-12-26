@@ -8,6 +8,7 @@ import com.example.demo.service.BroadcastService;
 import com.example.demo.service.EventUpdateService;
 
 import java.util.List;
+@Service
 
 public class EventUpdateServiceImpl implements EventUpdateService {
 
