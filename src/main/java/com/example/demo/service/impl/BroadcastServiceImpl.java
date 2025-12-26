@@ -15,44 +15,33 @@ import java.util.List;
 public class BroadcastServiceImpl implements BroadcastService {
 
     @Autowired
-    private BroadcastLogRepository broadcastLogRepository;
+    private EventUpdateRepository eventUpdateRepository;
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    private EventUpdateRepository eventUpdateRepository;
+    private BroadcastLogRepository broadcastLogRepository;
+
+    // REQUIRED BY TESTS
+    public BroadcastServiceImpl() {}
 
     @Override
-    public void broadcastUpdate(long updateId, EventUpdate update) {
-        var subscribers = subscriptionRepository.findByEventId(update.getEvent().getId());
+    public void broadcastUpdate(long eventId, EventUpdate update) {
+        var subs = subscriptionRepository.findByEventId(eventId);
 
-        for (var s : subscribers) {
+        for (var s : subs) {
             BroadcastLog log = new BroadcastLog();
             log.setEventUpdate(update);
-            log.setSubscriber(s);
+            log.setSubscriber(s.getUser());
             log.setDeliveryStatus("DELIVERED");
+
             broadcastLogRepository.save(log);
         }
     }
 
     @Override
-    public BroadcastLog recordDelivery(long updateId, long userId, boolean delivered) {
-        EventUpdate update = eventUpdateRepository.findById(updateId)
-                .orElseThrow(() -> new RuntimeException("Update not found"));
-
-        BroadcastLog log = new BroadcastLog();
-        log.setEventUpdate(update);
-        log.setDeliveryStatus(delivered ? "DELIVERED" : "FAILED");
-
-        return broadcastLogRepository.save(log);
-    }
-
-    @Override
-    public List<BroadcastLog> getLogsForUpdate(long updateId) {
-        EventUpdate update = eventUpdateRepository.findById(updateId)
-                .orElseThrow(() -> new RuntimeException("Update not found"));
-
-        return broadcastLogRepository.findByEventUpdate(update);
+    public List<BroadcastLog> getLogsForUpdate(long eventUpdateId) {
+        return broadcastLogRepository.findByEventUpdateId(eventUpdateId);
     }
 }
