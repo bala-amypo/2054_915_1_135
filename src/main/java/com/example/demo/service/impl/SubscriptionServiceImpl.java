@@ -1,8 +1,6 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.Event;
 import com.example.demo.entity.Subscription;
-import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.SubscriptionRepository;
@@ -17,6 +15,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
+    // ⚠️ Constructor order matters
     public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository,
                                    UserRepository userRepository,
                                    EventRepository eventRepository) {
@@ -31,38 +30,39 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new IllegalArgumentException("Already subscribed");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        Subscription subscription = new Subscription();
+        subscription.setUser(
+                userRepository.findById(userId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("User not found"))
+        );
+        subscription.setEvent(
+                eventRepository.findById(eventId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Event not found"))
+        );
 
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Event not found"));
-
-        Subscription sub = new Subscription();
-        sub.setUser(user);
-        sub.setEvent(event);
-
-        return subscriptionRepository.save(sub);
+        return subscriptionRepository.save(subscription);
     }
 
     @Override
     public void unsubscribe(Long userId, Long eventId) {
-        Subscription sub = subscriptionRepository
-                .findByUserIdAndEventId(userId, eventId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Subscription not found"));
+        Subscription subscription =
+                subscriptionRepository.findByUserIdAndEventId(userId, eventId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Subscription not found"));
 
-        subscriptionRepository.delete(sub);
+        subscriptionRepository.delete(subscription);
     }
 
     @Override
-    public List<Subscription> getSubscriptionsForUser(Long userId) {
+    public List<Subscription> getUserSubscriptions(Long userId) {
         return subscriptionRepository.findByUserId(userId);
     }
 
     @Override
-    public boolean checkSubscription(Long userId, Long eventId) {
-        return subscriptionRepository.existsByUserIdAndEventId(userId, eventId);
+    public boolean isSubscribed(Long userId, Long eventId) {
+        return subscriptionRepository
+                .existsByUserIdAndEventId(userId, eventId);
     }
 }
