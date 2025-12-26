@@ -35,24 +35,17 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
-    public void broadcastToSubscribers(EventUpdate update) {
+    public BroadcastServiceImpl(
+        EventUpdateRepository eventUpdateRepository,
+        SubscriptionRepository subscriptionRepository,
+        BroadcastLogRepository broadcastLogRepository,
+        EventRepository eventRepository
+) {
+    this.eventUpdateRepository = eventUpdateRepository;
+    this.subscriptionRepository = subscriptionRepository;
+    this.broadcastLogRepository = broadcastLogRepository;
+    this.eventRepository = eventRepository;
+}
 
-        Event event = eventRepository.findById(update.getEventId())
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
-
-        List<Subscription> subscribers =
-                subscriptionRepository.findByEventId(event.getId());
-
-        for (Subscription sub : subscribers) {
-
-            BroadcastLog log = new BroadcastLog();
-            log.setEventId(event.getId());
-            log.setUserId(sub.getUserId());
-            log.setMessage(update.getMessage());
-            log.setBroadcastTime(LocalDateTime.now());
-            log.setDelivered(true);
-
-            broadcastLogRepository.save(log);
-        }
     }
 }
