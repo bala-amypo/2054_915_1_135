@@ -30,30 +30,25 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public Subscription subscribe(Long userId, Long eventId) {
 
-        if (subscriptionRepository.existsByUserIdAndEventId(userId, eventId)) {
-            throw new IllegalArgumentException("Already subscribed");
-        }
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
-        Subscription subscription = new Subscription(user, event);
+        Subscription subscription = new Subscription();
+        subscription.setUserId(user.getId());
+        subscription.setEventId(event.getId());
 
         return subscriptionRepository.save(subscription);
     }
 
     @Override
     public void unsubscribe(Long userId, Long eventId) {
-        subscriptionRepository.findByUserIdAndEventId(userId, eventId)
-                .ifPresent(subscriptionRepository::delete);
-    }
+        Subscription sub = subscriptionRepository.findByUserIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subscription not found"));
 
-    @Override
-    public boolean isSubscribed(Long userId, Long eventId) {
-        return subscriptionRepository.existsByUserIdAndEventId(userId, eventId);
+        subscriptionRepository.delete(sub);
     }
 
     @Override
