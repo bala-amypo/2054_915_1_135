@@ -10,35 +10,34 @@ import java.util.List;
 @RequestMapping("/api/events")
 public class EventController {
 
-    private final EventService service;
+    private final EventService eventService;
 
-    public EventController(EventService service) {
-        this.service = service;
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
     }
 
     @PostMapping
-    public Event create(@RequestBody Event e) {
-        return service.createEvent(e);
+    public Event create(@RequestBody Event event) {
+        return eventService.createEvent(event);
     }
 
     @PutMapping("/{id}")
-    public Event update(@PathVariable Long id,
-                        @RequestBody Event e) {
-        return service.updateEvent(id, e);
+    public Event update(@PathVariable Long id, @RequestBody Event event) {
+        return eventService.updateEvent(id, event);
     }
 
     @GetMapping("/{id}")
     public Event get(@PathVariable Long id) {
-        return service.getById(id);
+        return eventService.getById(id);
     }
 
-    @GetMapping("/active")
-    public List<Event> active() {
-        return service.getActiveEvents();
+    @GetMapping
+    public List<Event> getAllActive() {
+        return eventService.getActiveEvents();
     }
 
     @PatchMapping("/{id}/deactivate")
     public Event deactivate(@PathVariable Long id) {
-        return service.deactivateEvent(id);
+        return eventService.deactivateEvent(id);
     }
 }
