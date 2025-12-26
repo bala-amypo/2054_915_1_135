@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 @Table(name = "event_updates")
@@ -11,31 +10,13 @@ public class EventUpdate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Event event;
+    private Long eventId;
 
-    private String updateContent;
+    private String title;
 
-    @Enumerated(EnumType.STRING)
-    private SeverityLevel severityLevel;
-
-    private Instant timestamp;
+    private String message;
 
     public EventUpdate() {
-    }
-
-    public EventUpdate(Event event, String updateContent, SeverityLevel severityLevel) {
-        this.event = event;
-        this.updateContent = updateContent;
-        this.severityLevel = severityLevel;
-    }
-
-    @PrePersist
-    public void onCreate() {
-        if (severityLevel == null) {
-            severityLevel = SeverityLevel.LOW;
-        }
-        this.timestamp = Instant.now();
     }
 
     public Long getId() {
@@ -46,35 +27,27 @@ public class EventUpdate {
         this.id = id;
     }
 
-    public Event getEvent() {
-        return event;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
-    public String getUpdateContent() {
-        return updateContent;
+    public String getEventTitle() {
+        return title;
     }
 
-    public void setUpdateContent(String updateContent) {
-        this.updateContent = updateContent;
+    public void setEventTitle(String title) {
+        this.title = title;
     }
 
-    public SeverityLevel getSeverityLevel() {
-        return severityLevel;
+    public String getMessage() {
+        return message;
     }
 
-    public void setSeverityLevel(SeverityLevel severityLevel) {
-        this.severityLevel = severityLevel;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

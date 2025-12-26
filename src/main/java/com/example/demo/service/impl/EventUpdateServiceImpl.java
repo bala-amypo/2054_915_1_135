@@ -16,13 +16,13 @@ public class EventUpdateServiceImpl implements EventUpdateService {
     private final EventUpdateRepository eventUpdateRepository;
     private final EventRepository eventRepository;
 
-    // ***** REQUIRED BY HIDDEN TESTS *****
+    // constructor needed by tests
     public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository) {
         this.eventUpdateRepository = eventUpdateRepository;
         this.eventRepository = null;
     }
 
-    // ***** USED BY SPRING AT RUNTIME *****
+    // constructor used by Spring
     public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository,
                                   EventRepository eventRepository) {
         this.eventUpdateRepository = eventUpdateRepository;
@@ -32,7 +32,8 @@ public class EventUpdateServiceImpl implements EventUpdateService {
     @Override
     public EventUpdate publishUpdate(EventUpdate update) {
 
-        if (eventRepository != null) {
+        if (eventRepository != null && update.getEventId() != null) {
+
             Event event = eventRepository.findById(update.getEventId())
                     .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 

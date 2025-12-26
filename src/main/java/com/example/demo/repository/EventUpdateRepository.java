@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface EventUpdateRepository extends JpaRepository<EventUpdate, Long> {
 
-    List<EventUpdate> findByEventIdOrderByTimestampAsc(Long eventId);
+    List<EventUpdate> findByEventId(Long eventId);
 }
