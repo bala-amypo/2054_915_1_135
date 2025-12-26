@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.BroadcastLog;
 import com.example.demo.entity.EventUpdate;
-import com.example.demo.entity.User;
 import com.example.demo.repository.BroadcastLogRepository;
 import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.repository.SubscriptionRepository;
@@ -24,25 +23,21 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Autowired
     private EventUpdateRepository eventUpdateRepository;
 
-    public BroadcastServiceImpl(){}
-
     @Override
     public void broadcastUpdate(long updateId, EventUpdate update) {
-        List<User> subscribers =
-                subscriptionRepository.findByEventId(update.getEvent().getId());
+        var subscribers = subscriptionRepository.findByEventId(update.getEvent().getId());
 
-        for (User subscriber : subscribers) {
+        for (var s : subscribers) {
             BroadcastLog log = new BroadcastLog();
             log.setEventUpdate(update);
-            log.setSubscriber(subscriber);
+            log.setSubscriber(s);
             log.setDeliveryStatus("DELIVERED");
-
             broadcastLogRepository.save(log);
         }
     }
 
     @Override
-    public void recordDelivery(long updateId, long userId, boolean delivered) {
+    public BroadcastLog recordDelivery(long updateId, long userId, boolean delivered) {
         EventUpdate update = eventUpdateRepository.findById(updateId)
                 .orElseThrow(() -> new RuntimeException("Update not found"));
 
@@ -50,7 +45,7 @@ public class BroadcastServiceImpl implements BroadcastService {
         log.setEventUpdate(update);
         log.setDeliveryStatus(delivered ? "DELIVERED" : "FAILED");
 
-        broadcastLogRepository.save(log);
+        return broadcastLogRepository.save(log);
     }
 
     @Override

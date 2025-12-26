@@ -1,15 +1,15 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.EventUpdate;
 import com.example.demo.entity.BroadcastLog;
+import com.example.demo.entity.EventUpdate;
 
 import java.util.List;
 
 public interface BroadcastService {
 
-    void broadcastUpdate(long eventUpdateId, EventUpdate update);
+    void broadcastUpdate(long updateId, EventUpdate update);
 
-    BroadcastLog recordDelivery(long eventUpdateId, long userId, boolean delivered);
+    BroadcastLog recordDelivery(long updateId, long userId, boolean delivered);
 
-    List<BroadcastLog> getLogsForUpdate(long eventUpdateId);
+    List<BroadcastLog> getLogsForUpdate(long updateId);
 }
