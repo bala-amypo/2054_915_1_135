@@ -20,15 +20,23 @@ public class EventServiceImpl implements EventService {
         if (role == Role.ADMIN || role == Role.ORGANIZER) {
             return eventRepository.findAll();
         }
+
         return eventRepository.findByIsActiveTrue();
     }
 
     @Override
-    public void deactivateEvent(Long id) {
-        Event e = eventRepository.findById(id)
+    public Event deactivateEvent(Long id) {
+        Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        e.setIsActive(false);
-        eventRepository.save(e);
+        event.setActive(false);
+
+        return eventRepository.save(event);
+    }
+
+    @Override
+    public Event createEvent(Event event) {
+        event.setActive(true);
+        return eventRepository.save(event);
     }
 }
