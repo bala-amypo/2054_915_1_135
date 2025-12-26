@@ -24,11 +24,12 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Autowired
     private EventUpdateRepository eventUpdateRepository;
 
-    public BroadcastServiceImpl() {}
+    public BroadcastServiceImpl(){}
 
     @Override
     public void broadcastUpdate(long updateId, EventUpdate update) {
-        List<User> subscribers = subscriptionRepository.findSubscribersByEvent(update.getEvent().getId());
+        List<User> subscribers =
+                subscriptionRepository.findByEventId(update.getEvent().getId());
 
         for (User subscriber : subscribers) {
             BroadcastLog log = new BroadcastLog();
@@ -38,5 +39,13 @@ public class BroadcastServiceImpl implements BroadcastService {
 
             broadcastLogRepository.save(log);
         }
+    }
+
+    @Override
+    public List<BroadcastLog> getLogsForUpdate(long updateId) {
+        EventUpdate update = eventUpdateRepository.findById(updateId)
+                .orElseThrow(() -> new RuntimeException("Update not found"));
+
+        return broadcastLogRepository.findByEventUpdate(update);
     }
 }
