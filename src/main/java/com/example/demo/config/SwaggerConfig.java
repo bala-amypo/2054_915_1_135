@@ -1,19 +1,22 @@
 package com.example.demo.config;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info()
-                        .title("Digital Local Event Broadcasting API")
-                        .version("1.0")
-                        .description("JWT-secured event broadcasting platform"));
-    }
+                // You need to change the port as per your server
+                .servers(List.of(
+                        new Server().url("https://9069.408procr.amypo.ai/")
+                ));
+        }
 }
