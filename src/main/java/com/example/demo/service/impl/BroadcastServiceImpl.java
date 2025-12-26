@@ -10,6 +10,9 @@ import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.service.BroadcastService;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
+
+@Service
 
 public class BroadcastServiceImpl implements BroadcastService {
 
