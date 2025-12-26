@@ -27,7 +27,8 @@ public class EventServiceImpl implements EventService {
         User publisher = userRepository.findById(event.getPublisher().getId())
                 .orElseThrow();
 
-        if (publisher.getRole() != Role.PUBLISHER && publisher.getRole() != Role.ADMIN) {
+        if (publisher.getRole() != Role.PUBLISHER &&
+            publisher.getRole() != Role.ADMIN) {
             throw new RuntimeException("Only PUBLISHER or ADMIN");
         }
 
@@ -48,12 +49,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void deactivateEvent(Long id) {
+    public Event deactivateEvent(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
         event.setActive(false);
-        eventRepository.save(event);
+        return eventRepository.save(event);
     }
 
     @Override

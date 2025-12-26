@@ -41,24 +41,29 @@ public class BroadcastServiceImpl implements BroadcastService {
             BroadcastLog log = new BroadcastLog();
             log.setEventUpdate(update);
             log.setSubscriber(s.getUser());
+            log.setDeliveryStatus(DeliveryStatus.SENT);
             broadcastLogRepository.save(log);
         }
     }
 
     @Override
-    public List<BroadcastLog> getLogsForUpdate(Long updateId) {
+    public List<BroadcastLog> getLogsForUpdate(long updateId) {
         return broadcastLogRepository.findByEventUpdateId(updateId);
     }
 
     @Override
-    public void recordDelivery(long updateId, long userId, boolean success) {
+    public BroadcastLog recordDelivery(long updateId, long userId, boolean success) {
         List<BroadcastLog> logs = broadcastLogRepository.findByEventUpdateId(updateId);
 
         for (BroadcastLog log : logs) {
             if (log.getSubscriber().getId().equals(userId)) {
-                log.setDeliveryStatus(success ? DeliveryStatus.SENT : DeliveryStatus.FAILED);
-                broadcastLogRepository.save(log);
+                log.setDeliveryStatus(
+                        success ? DeliveryStatus.SENT : DeliveryStatus.FAILED
+                );
+                return broadcastLogRepository.save(log);
             }
         }
+
+        throw new RuntimeException("Log not found");
     }
 }
