@@ -1,28 +1,21 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.BroadcastLog;
+import com.example.demo.entity.EventUpdate;
 import com.example.demo.service.BroadcastService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/broadcasts")
+@RequestMapping("/api/broadcast")
 public class BroadcastController {
 
-    private final BroadcastService service;
+    private final BroadcastService broadcastService;
 
-    public BroadcastController(BroadcastService service) {
-        this.service = service;
+    public BroadcastController(BroadcastService broadcastService) {
+        this.broadcastService = broadcastService;
     }
 
-    @PostMapping("/trigger/{updateId}")
-    public void trigger(@PathVariable Long updateId) {
-        service.broadcastUpdate(updateId);
-    }
-
-    @GetMapping("/logs/{updateId}")
-    public List<BroadcastLog> logs(@PathVariable Long updateId) {
-        return service.getLogsForUpdate(updateId);
+    @PostMapping
+    public void broadcast(@RequestBody EventUpdate eventUpdate) {
+        broadcastService.broadcastToSubscribers(eventUpdate);
     }
 }

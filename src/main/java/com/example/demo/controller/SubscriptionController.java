@@ -10,32 +10,26 @@ import java.util.List;
 @RequestMapping("/api/subscriptions")
 public class SubscriptionController {
 
-    private final SubscriptionService service;
+    private final SubscriptionService subscriptionService;
 
-    public SubscriptionController(SubscriptionService service) {
-        this.service = service;
+    public SubscriptionController(SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
     }
 
-    @PostMapping("/{eventId}")
-    public Subscription subscribe(@RequestParam Long userId,
+    @PostMapping("/{userId}/{eventId}")
+    public Subscription subscribe(@PathVariable Long userId,
                                   @PathVariable Long eventId) {
-        return service.subscribe(userId, eventId);
+        return subscriptionService.subscribe(userId, eventId);
     }
 
-    @DeleteMapping("/{eventId}")
-    public void unsubscribe(@RequestParam Long userId,
+    @DeleteMapping("/{userId}/{eventId}")
+    public void unsubscribe(@PathVariable Long userId,
                             @PathVariable Long eventId) {
-        service.unsubscribe(userId, eventId);
+        subscriptionService.unsubscribe(userId, eventId);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Subscription> userSubs(@PathVariable Long userId) {
-        return service.getUserSubscriptions(userId);
-    }
-
-    @GetMapping("/check/{userId}/{eventId}")
-    public boolean check(@PathVariable Long userId,
-                         @PathVariable Long eventId) {
-        return service.isSubscribed(userId, eventId);
+    @GetMapping("/{userId}")
+    public List<Subscription> list(@PathVariable Long userId) {
+        return subscriptionService.getUserSubscriptions(userId);
     }
 }
