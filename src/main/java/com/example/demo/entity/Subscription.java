@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 @Table(name = "subscriptions")
@@ -11,25 +10,11 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private User user;
+    private Long userId;
 
-    @ManyToOne
-    private Event event;
-
-    private Instant subscribedAt;
+    private Long eventId;
 
     public Subscription() {
-    }
-
-    public Subscription(User user, Event event) {
-        this.user = user;
-        this.event = event;
-    }
-
-    @PrePersist
-    public void onCreate() {
-        this.subscribedAt = Instant.now();
     }
 
     public Long getId() {
@@ -40,27 +25,19 @@ public class Subscription {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Event getEvent() {
-        return event;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public Instant getSubscribedAt() {
-        return subscribedAt;
-    }
-
-    public void setSubscribedAt(Instant subscribedAt) {
-        this.subscribedAt = subscribedAt;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 }

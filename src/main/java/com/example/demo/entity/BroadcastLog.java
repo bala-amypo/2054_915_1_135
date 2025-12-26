@@ -1,7 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "broadcast_logs")
@@ -11,30 +12,17 @@ public class BroadcastLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private EventUpdate eventUpdate;
+    private Long eventId;
 
-    @ManyToOne
-    private User subscriber;
+    private Long userId;
 
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
+    private String message;
 
-    private Instant sentAt;
+    private LocalDateTime broadcastTime;
+
+    private boolean delivered;
 
     public BroadcastLog() {
-        this.deliveryStatus = DeliveryStatus.SENT;
-    }
-
-    public BroadcastLog(EventUpdate eventUpdate, User subscriber, DeliveryStatus deliveryStatus) {
-        this.eventUpdate = eventUpdate;
-        this.subscriber = subscriber;
-        this.deliveryStatus = deliveryStatus;
-    }
-
-    @PrePersist
-    public void onCreate() {
-        this.sentAt = Instant.now();
     }
 
     public Long getId() {
@@ -45,35 +33,43 @@ public class BroadcastLog {
         this.id = id;
     }
 
-    public EventUpdate getEventUpdate() {
-        return eventUpdate;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setEventUpdate(EventUpdate eventUpdate) {
-        this.eventUpdate = eventUpdate;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
-    public User getSubscriber() {
-        return subscriber;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setSubscriber(User subscriber) {
-        this.subscriber = subscriber;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public DeliveryStatus getDeliveryStatus() {
-        return deliveryStatus;
+    public String getMessage() {
+        return message;
     }
 
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public Instant getSentAt() {
-        return sentAt;
+    public LocalDateTime getBroadcastTime() {
+        return broadcastTime;
     }
 
-    public void setSentAt(Instant sentAt) {
-        this.sentAt = sentAt;
+    public void setBroadcastTime(LocalDateTime broadcastTime) {
+        this.broadcastTime = broadcastTime;
+    }
+
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
     }
 }
