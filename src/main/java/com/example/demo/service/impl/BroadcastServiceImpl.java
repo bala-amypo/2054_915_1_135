@@ -42,6 +42,18 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
+    public void recordDelivery(long updateId, long userId, boolean delivered) {
+        EventUpdate update = eventUpdateRepository.findById(updateId)
+                .orElseThrow(() -> new RuntimeException("Update not found"));
+
+        BroadcastLog log = new BroadcastLog();
+        log.setEventUpdate(update);
+        log.setDeliveryStatus(delivered ? "DELIVERED" : "FAILED");
+
+        broadcastLogRepository.save(log);
+    }
+
+    @Override
     public List<BroadcastLog> getLogsForUpdate(long updateId) {
         EventUpdate update = eventUpdateRepository.findById(updateId)
                 .orElseThrow(() -> new RuntimeException("Update not found"));
