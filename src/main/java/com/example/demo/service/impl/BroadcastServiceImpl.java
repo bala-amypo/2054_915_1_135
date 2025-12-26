@@ -1,9 +1,9 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.BroadcastLog;
+import com.example.demo.entity.DeliveryStatus;
 import com.example.demo.entity.EventUpdate;
 import com.example.demo.entity.Subscription;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.BroadcastLogRepository;
 import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.repository.SubscriptionRepository;
@@ -13,39 +13,53 @@ import java.util.List;
 
 public class BroadcastServiceImpl implements BroadcastService {
 
-    private final BroadcastLogRepository logRepository;
+    private final EventUpdateRepository eventUpdateRepository;
     private final SubscriptionRepository subscriptionRepository;
-    private final EventUpdateRepository updateRepository;
+    private final BroadcastLogRepository broadcastLogRepository;
 
-    public BroadcastServiceImpl(BroadcastLogRepository logRepository,
+    //  Constructor order matters
+    public BroadcastServiceImpl(EventUpdateRepository eventUpdateRepository,
                                 SubscriptionRepository subscriptionRepository,
-                                EventUpdateRepository updateRepository) {
-        this.logRepository = logRepository;
+                                BroadcastLogRepository broadcastLogRepository) {
+        this.eventUpdateRepository = eventUpdateRepository;
         this.subscriptionRepository = subscriptionRepository;
-        this.updateRepository = updateRepository;
+        this.broadcastLogRepository = broadcastLogRepository;
     }
 
     @Override
-    public void triggerBroadcast(Long updateId) {
-        EventUpdate update = updateRepository.findById(updateId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Update not found"));
+    public void broadcastUpdate(Long updateId) {
+        EventUpdate update = eventUpdateRepository.findById(updateId)
+                .orElseThrow();
 
-        List<Subscription> subs =
-                subscriptionRepository.findByUserId(
-                        update.getEvent().getPublisher().getId()
-                );
+        List<Subscription> subscriptions =
+                subscriptionRepository.findByEventId(update.getEvent().getId());
 
-        for (Subscription sub : subs) {
+        for (Subscription sub : subscriptions) {
             BroadcastLog log = new BroadcastLog();
             log.setEventUpdate(update);
             log.setSubscriber(sub.getUser());
-            logRepository.save(log);
+            log.setDeliveryStatus(DeliveryStatus.SENT);
+            broadcastLogRepository.save(log);
         }
     }
 
     @Override
     public List<BroadcastLog> getLogsForUpdate(Long updateId) {
-        return logRepository.findByEventUpdateId(updateId);
+        return broadcastLogRepository.findByEventUpdateId(updateId);
+    }
+
+    @Override
+    public void recordDelivery(Long updateId, Long subscriberId, boolean failed) {
+        List<BroadcastLog> logs =
+                broadcastLogRepository.findByEventUpdateId(updateId);
+
+        for (BroadcastLog log : logs) {
+            if (log.getSubscriber().getId().equals(subscriberId)) {
+                log.setDeliveryStatus(
+                        failed ? DeliveryStatus.FAILED : DeliveryStatus.SENT
+                );
+                broadcastLogRepository.save(log);
+            }
+        }
     }
 }

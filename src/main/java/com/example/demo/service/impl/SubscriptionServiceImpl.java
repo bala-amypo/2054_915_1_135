@@ -15,7 +15,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
-    // ⚠️ Constructor order matters
+    //  Constructor order matters
     public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository,
                                    UserRepository userRepository,
                                    EventRepository eventRepository) {
