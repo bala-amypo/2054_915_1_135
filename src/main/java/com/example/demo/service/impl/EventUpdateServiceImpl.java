@@ -6,17 +6,18 @@ import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.service.BroadcastService;
 import com.example.demo.service.EventUpdateService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Service
 
+@Service
 public class EventUpdateServiceImpl implements EventUpdateService {
 
     private final EventUpdateRepository eventUpdateRepository;
     private final EventRepository eventRepository;
     private final BroadcastService broadcastService;
 
-    //  Constructor order matters
+    // Constructor injection (tests rely on this exact signature)
     public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository,
                                   EventRepository eventRepository,
                                   BroadcastService broadcastService) {
@@ -38,8 +39,7 @@ public class EventUpdateServiceImpl implements EventUpdateService {
 
     @Override
     public List<EventUpdate> getUpdatesForEvent(Long eventId) {
-        return eventUpdateRepository
-                .findByEventIdOrderByTimestampAsc(eventId);
+        return eventUpdateRepository.findByEventIdOrderByTimestampAsc(eventId);
     }
 
     @Override
