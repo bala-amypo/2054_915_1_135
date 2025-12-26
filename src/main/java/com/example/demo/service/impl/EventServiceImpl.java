@@ -20,17 +20,34 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event deactivateEvent(Long id) {
-        Event e = eventRepository.findById(id)
+    public Event getById(Long id) {
+        return eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-
-        e.setActive(false);
-        return eventRepository.save(e);
     }
 
     @Override
     public Event createEvent(Event event) {
         event.setActive(true);
         return eventRepository.save(event);
+    }
+
+    @Override
+    public Event deactivateEvent(Long id) {
+        Event e = getById(id);
+        e.setActive(false);
+        return eventRepository.save(e);
+    }
+
+    @Override
+    public Event updateEvent(Long id, Event updated) {
+        Event e = getById(id);
+
+        e.setTitle(updated.getTitle());
+        e.setDescription(updated.getDescription());
+        e.setCategory(updated.getCategory());
+        e.setLocation(updated.getLocation());
+        e.setActive(updated.isActive());
+
+        return eventRepository.save(e);
     }
 }
