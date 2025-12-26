@@ -49,6 +49,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    public void unsubscribe(Long userId, Long eventId) {
+        Subscription s = subscriptionRepository
+                .findByUserIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+
+        subscriptionRepository.delete(s);
+    }
+
+    @Override
     public boolean isSubscribed(Long userId, Long eventId) {
         return subscriptionRepository.existsByUserIdAndEventId(userId, eventId);
     }

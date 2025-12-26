@@ -7,14 +7,18 @@ import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.service.EventUpdateService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EventUpdateServiceImpl implements EventUpdateService {
 
     private final EventUpdateRepository eventUpdateRepository;
     private final EventRepository eventRepository;
 
-    public EventUpdateServiceImpl(EventUpdateRepository eventUpdateRepository,
-                                  EventRepository eventRepository) {
+    public EventUpdateServiceImpl(
+            EventUpdateRepository eventUpdateRepository,
+            EventRepository eventRepository
+    ) {
         this.eventUpdateRepository = eventUpdateRepository;
         this.eventRepository = eventRepository;
     }
@@ -28,5 +32,16 @@ public class EventUpdateServiceImpl implements EventUpdateService {
         update.setEvent(event);
 
         return eventUpdateRepository.save(update);
+    }
+
+    @Override
+    public EventUpdate getUpdateById(Long id) {
+        return eventUpdateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Update not found"));
+    }
+
+    @Override
+    public List<EventUpdate> getUpdatesForEvent(Long eventId) {
+        return eventUpdateRepository.findByEventId(eventId);
     }
 }

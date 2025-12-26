@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.BroadcastLog;
-import com.example.demo.entity.DeliveryStatus;
 import com.example.demo.entity.EventUpdate;
 import com.example.demo.repository.BroadcastLogRepository;
 import com.example.demo.repository.EventUpdateRepository;
@@ -31,21 +30,39 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Override
     public void broadcastToSubscribers(EventUpdate update) {
 
-        var subscribers =
-                subscriptionRepository.findByUserId(update.getEvent().getOrganizer().getId());
+        // fallback: get ALL subscriptions and filter manually
+        var subs = subscriptionRepository.findAll();
 
-        for (var s : subscribers) {
-            BroadcastLog log = new BroadcastLog();
-            log.setEventUpdate(update);
-            log.setSubscriber(s.getUser());
-            log.setDeliveryStatus(DeliveryStatus.DELIVERED);
+        for (var s : subs) {
+            if (s.getEvent() != null &&
+                update.getEvent() != null &&
+                s.getEvent().getId().equals(update.getEvent().getId())) {
 
-            broadcastLogRepository.save(log);
+                BroadcastLog log = new BroadcastLog();
+                log.setEventUpdate(update);
+                log.setSubscriber(s.getUser());
+                log.setStatus("DELIVERED");
+
+                broadcastLogRepository.save(log);
+            }
         }
     }
 
     @Override
     public List<BroadcastLog> getLogsForUpdate(Long updateId) {
         return broadcastLogRepository.findByEventUpdateId(updateId);
+    }
+
+    @Override
+    public BroadcastLog recordDelivery(long updateId, long userId, boolean delivered) {
+
+        EventUpdate update = eventUpdateRepository.findById(updateId)
+                .orElseThrow(() -> new RuntimeException("Update not found"));
+
+        BroadcastLog log = new BroadcastLog();
+        log.setEventUpdate(update);
+        log.setStatus(delivered ? "DELIVERED" : "FAILED");
+
+        return broadcastLogRepository.save(log);
     }
 }
