@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "broadcast_logs")
@@ -11,43 +10,39 @@ public class BroadcastLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "event_update_id")
-    private EventUpdate eventUpdate;
+    private Long eventUpdateId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User subscriber;
+    private Long userId;
 
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
+    private boolean delivered;
 
-    private LocalDateTime createdAt;
+    public BroadcastLog() {}
 
-    public BroadcastLog() {
-        this.createdAt = LocalDateTime.now();
-        this.deliveryStatus = DeliveryStatus.SENT;
+    public Long getId() {
+        return id;
     }
 
-    public Long getId() { return id; }
-
-    public void setId(Long id) { this.id = id; }
-
-    public EventUpdate getEventUpdate() { return eventUpdate; }
-
-    public void setEventUpdate(EventUpdate eventUpdate) { this.eventUpdate = eventUpdate; }
-
-    public User getSubscriber() { return subscriber; }
-
-    public void setSubscriber(User subscriber) { this.subscriber = subscriber; }
-
-    public DeliveryStatus getDeliveryStatus() { return deliveryStatus; }
-
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
+    public Long getEventUpdateId() {
+        return eventUpdateId;
     }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setEventUpdateId(Long eventUpdateId) {
+        this.eventUpdateId = eventUpdateId;
+    }
 
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
+    }
 }
