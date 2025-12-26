@@ -2,25 +2,21 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "broadcast_logs")
 public class BroadcastLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long eventId;
+    @ManyToOne
+    private EventUpdate eventUpdate;
 
-    private Long userId;
+    @ManyToOne
+    private User subscriber;
 
-    private String message;
-
-    private LocalDateTime broadcastTime;
-
-    private boolean delivered;
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
 
     public BroadcastLog() {
     }
@@ -29,47 +25,27 @@ public class BroadcastLog {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public EventUpdate getEventUpdate() {
+        return eventUpdate;
     }
 
-    public Long getEventId() {
-        return eventId;
+    public void setEventUpdate(EventUpdate eventUpdate) {
+        this.eventUpdate = eventUpdate;
     }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
+    public User getSubscriber() {
+        return subscriber;
     }
 
-    public Long getUserId() {
-        return userId;
+    public void setSubscriber(User subscriber) {
+        this.subscriber = subscriber;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LocalDateTime getBroadcastTime() {
-        return broadcastTime;
-    }
-
-    public void setBroadcastTime(LocalDateTime broadcastTime) {
-        this.broadcastTime = broadcastTime;
-    }
-
-    public boolean isDelivered() {
-        return delivered;
-    }
-
-    public void setDelivered(boolean delivered) {
-        this.delivered = delivered;
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 }

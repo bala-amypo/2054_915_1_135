@@ -1,20 +1,23 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "event_updates")
 public class EventUpdate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long eventId;
-
-    private String title;
+    @ManyToOne
+    private Event event;
 
     private String message;
+
+    private String severityLevel;
+
+    private LocalDateTime timestamp;
 
     public EventUpdate() {
     }
@@ -23,24 +26,12 @@ public class EventUpdate {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Event getEvent() {
+        return event;
     }
 
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
-
-    public String getEventTitle() {
-        return title;
-    }
-
-    public void setEventTitle(String title) {
-        this.title = title;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public String getMessage() {
@@ -49,5 +40,22 @@ public class EventUpdate {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(String severityLevel) {
+        this.severityLevel = severityLevel;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 }
