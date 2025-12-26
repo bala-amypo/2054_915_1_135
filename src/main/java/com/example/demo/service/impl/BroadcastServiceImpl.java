@@ -25,12 +25,23 @@ public class BroadcastServiceImpl implements BroadcastService {
                 subscriptionRepository.findByEventId(update.getEvent().getId());
 
         for (Subscription s : subscribers) {
-            BroadcastLog log = new BroadcastLog();
-            log.setEventUpdate(update);
-            log.setSubscriber(s.getUser());
-            log.setDeliveryStatus(DeliveryStatus.DELIVERED);
-
-            broadcastLogRepository.save(log);
+            recordDelivery(eventUpdateId, s.getUser().getId(), true);
         }
+    }
+
+    @Override
+    public BroadcastLog recordDelivery(long eventUpdateId, long userId, boolean delivered) {
+
+        BroadcastLog log = new BroadcastLog();
+        log.setEventUpdateId(eventUpdateId);
+        log.setUserId(userId);
+        log.setDelivered(delivered);
+
+        return broadcastLogRepository.save(log);
+    }
+
+    @Override
+    public List<BroadcastLog> getLogsForUpdate(long eventUpdateId) {
+        return broadcastLogRepository.findByEventUpdateId(eventUpdateId);
     }
 }
