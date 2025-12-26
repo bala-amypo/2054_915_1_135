@@ -1,9 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
+@Table(name = "event_updates")
 public class EventUpdate {
 
     @Id
@@ -15,29 +16,18 @@ public class EventUpdate {
 
     private String updateContent;
 
-    // INFO / WARNING / CRITICAL
-    private String updateType;
+    @Enumerated(EnumType.STRING)
+    private SeverityLevel severityLevel;
 
-    private Timestamp postedAt;
+    private Instant timestamp;
 
     @PrePersist
-    protected void onCreate() {
-        this.postedAt = new Timestamp(System.currentTimeMillis());
+    public void onCreate() {
+        this.timestamp = Instant.now();
+        if (this.severityLevel == null) {
+            this.severityLevel = SeverityLevel.LOW;
+        }
     }
 
     // getters & setters
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Event getEvent() { return event; }
-    public void setEvent(Event event) { this.event = event; }
-
-    public String getUpdateContent() { return updateContent; }
-    public void setUpdateContent(String updateContent) { this.updateContent = updateContent; }
-
-    public String getUpdateType() { return updateType; }
-    public void setUpdateType(String updateType) { this.updateType = updateType; }
-
-    public Timestamp getPostedAt() { return postedAt; }
 }
