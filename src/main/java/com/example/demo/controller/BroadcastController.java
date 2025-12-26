@@ -1,20 +1,20 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.EventUpdate;
 import com.example.demo.service.BroadcastService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/broadcasts")
+@RequestMapping("/broadcast")
 public class BroadcastController {
 
-    @Autowired
-   broadcastService.broadcastUpdate(updateId);
+    private final BroadcastService broadcastService;
 
+    public BroadcastController(BroadcastService broadcastService) {
+        this.broadcastService = broadcastService;
+    }
 
     @PostMapping("/{updateId}")
-    public void broadcast(@PathVariable Long updateId, @RequestBody EventUpdate update) {
-        broadcastService.broadcastUpdate(updateId, update);
+    public void broadcast(@PathVariable Long updateId) {
+        broadcastService.broadcastUpdate(updateId);
     }
 }
