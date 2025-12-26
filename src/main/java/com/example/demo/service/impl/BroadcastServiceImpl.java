@@ -1,14 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.BroadcastLog;
-import com.example.demo.entity.DeliveryStatus;
-import com.example.demo.entity.Event;
-import com.example.demo.entity.EventUpdate;
-import com.example.demo.entity.Subscription;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.repository.BroadcastLogRepository;
-import com.example.demo.repository.EventRepository;
-import com.example.demo.repository.EventUpdateRepository;
 import com.example.demo.repository.SubscriptionRepository;
 import com.example.demo.service.BroadcastService;
 import org.springframework.stereotype.Service;
@@ -18,41 +11,27 @@ import java.util.List;
 @Service
 public class BroadcastServiceImpl implements BroadcastService {
 
-    private final EventUpdateRepository eventUpdateRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final BroadcastLogRepository broadcastLogRepository;
-    private final EventRepository eventRepository;
 
     public BroadcastServiceImpl(
-            EventUpdateRepository eventUpdateRepository,
             SubscriptionRepository subscriptionRepository,
-            BroadcastLogRepository broadcastLogRepository,
-            EventRepository eventRepository
+            BroadcastLogRepository broadcastLogRepository
     ) {
-        this.eventUpdateRepository = eventUpdateRepository;
         this.subscriptionRepository = subscriptionRepository;
         this.broadcastLogRepository = broadcastLogRepository;
-        this.eventRepository = eventRepository;
     }
 
     @Override
-    public void broadcastUpdate(long eventUpdateId) {
+    public void broadcastToSubscribers(EventUpdate update) {
 
-        EventUpdate update = eventUpdateRepository.findById(eventUpdateId)
-                .orElseThrow(() -> new RuntimeException("Update not found"));
+        List<Subscription> subs = subscriptionRepository.findAll();
 
-        Event event = update.getEvent();
-
-        List<Subscription> subscribers =
-                subscriptionRepository.findAll();
-
-        for (Subscription sub : subscribers) {
-
-            User user = sub.getUser();
+        for (Subscription sub : subs) {
 
             BroadcastLog log = new BroadcastLog();
             log.setEventUpdate(update);
-            log.setSubscriber(user);
+            log.setSubscriber(sub.getUser());
             log.setDeliveryStatus(DeliveryStatus.SENT);
 
             broadcastLogRepository.save(log);

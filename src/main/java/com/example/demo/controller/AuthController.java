@@ -52,7 +52,12 @@ public ApiResponse login(@RequestBody LoginRequest loginRequest) {
             )
     );
 
-    String token = jwtUtil.generateToken(authentication.getName());
+   String token = jwtUtil.generateToken(
+        user.getId(),
+        user.getEmail(),
+        user.getRole().name()
+);
+
 
     return new ApiResponse(true, "Login successful", token);
 }
