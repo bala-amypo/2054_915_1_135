@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 public class BroadcastController {
 
     @Autowired
-    private BroadcastService broadcastService;
+   broadcastService.broadcastUpdate(updateId);
+
 
     @PostMapping("/{updateId}")
     public void broadcast(@PathVariable Long updateId, @RequestBody EventUpdate update) {
