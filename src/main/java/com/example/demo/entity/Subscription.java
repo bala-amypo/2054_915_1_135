@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "subscriptions")
 public class Subscription {
 
     @Id
@@ -18,8 +19,7 @@ public class Subscription {
 
     private LocalDateTime subscribedAt;
 
-    public Subscription() {
-    }
+    public Subscription() {}
 
     public Long getId() {
         return id;
@@ -41,12 +41,12 @@ public class Subscription {
         this.event = event;
     }
 
-    @PrePersist
-    public void onCreate() {
-        this.subscribedAt = LocalDateTime.now();
-    }
-
     public LocalDateTime getSubscribedAt() {
         return subscribedAt;
+    }
+
+    @PrePersist
+    public void setSubscribedAt() {
+        this.subscribedAt = LocalDateTime.now();
     }
 }

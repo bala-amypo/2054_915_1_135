@@ -4,34 +4,28 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "event_updates")
 public class EventUpdate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Event event;
-
     private String message;
 
-    private String severityLevel;
+    @Enumerated(EnumType.STRING)
+    private SeverityLevel severity;
 
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
 
-    public EventUpdate() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
+    public EventUpdate() {}
 
     public Long getId() {
         return id;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
     }
 
     public String getMessage() {
@@ -42,20 +36,32 @@ public class EventUpdate {
         this.message = message;
     }
 
-    public String getSeverityLevel() {
-        return severityLevel;
+    public SeverityLevel getSeverity() {
+        return severity;
     }
 
-    public void setSeverityLevel(String severityLevel) {
-        this.severityLevel = severityLevel;
+    public void setSeverity(SeverityLevel severity) {
+        this.severity = severity;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @PrePersist
     public void onCreate() {
-        this.timestamp = LocalDateTime.now();
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+        this.createdAt = LocalDateTime.now();
     }
 }
