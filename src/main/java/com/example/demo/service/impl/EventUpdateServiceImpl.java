@@ -24,9 +24,13 @@ public class EventUpdateServiceImpl implements EventUpdateService {
     }
 
     @Override
-    public EventUpdate createUpdate(Long eventId, EventUpdate update) {
+    public EventUpdate publishUpdate(EventUpdate update) {
 
-        Event event = eventRepository.findById(eventId)
+        if (update.getEvent() == null || update.getEvent().getId() == null) {
+            throw new RuntimeException("Event is required");
+        }
+
+        Event event = eventRepository.findById(update.getEvent().getId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
         update.setEvent(event);

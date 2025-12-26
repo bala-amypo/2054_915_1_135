@@ -30,7 +30,6 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Override
     public void broadcastToSubscribers(EventUpdate update) {
 
-        // fallback: get ALL subscriptions and filter manually
         var subs = subscriptionRepository.findAll();
 
         for (var s : subs) {
@@ -41,7 +40,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                 BroadcastLog log = new BroadcastLog();
                 log.setEventUpdate(update);
                 log.setSubscriber(s.getUser());
-                log.setStatus("DELIVERED");
+                log.setDelivered(true);
 
                 broadcastLogRepository.save(log);
             }
@@ -49,7 +48,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
-    public List<BroadcastLog> getLogsForUpdate(Long updateId) {
+    public List<BroadcastLog> getLogsForUpdate(long updateId) {
         return broadcastLogRepository.findByEventUpdateId(updateId);
     }
 
@@ -61,7 +60,7 @@ public class BroadcastServiceImpl implements BroadcastService {
 
         BroadcastLog log = new BroadcastLog();
         log.setEventUpdate(update);
-        log.setStatus(delivered ? "DELIVERED" : "FAILED");
+        log.setDelivered(delivered);
 
         return broadcastLogRepository.save(log);
     }
