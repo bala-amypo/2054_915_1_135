@@ -18,28 +18,22 @@ public class UserController {
     }
 
     @PostMapping("/register")
-public User register(@RequestBody RegisterRequest request) {
-
-    User user = new User();
-
-    user.setFullName(request.fullName);
-    user.setEmail(request.email);
-    user.setPassword(request.password);
-    user.setRole(request.role);
-
-    return userService.registerUser(user);
-}
-
-
-    // 🔹 GET /api/users/{id}
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public User register(@RequestBody RegisterRequest req) {
+        User user = new User();
+        user.setFullName(req.getFullName());
+        user.setEmail(req.getEmail());
+        user.setPassword(req.getPassword());
+        user.setRole(req.getRole());
+        return userService.register(user);
     }
 
-    // 🔹 GET /api/users
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         return userService.getAllUsers();
     }
 }
