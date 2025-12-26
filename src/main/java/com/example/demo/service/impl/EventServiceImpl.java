@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Event;
-import com.example.demo.entity.Role;
 import com.example.demo.repository.EventRepository;
 import com.example.demo.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +15,17 @@ public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
 
     @Override
-    public List<Event> getEventsForUser(Role role) {
-        if (role == Role.ADMIN || role == Role.ORGANIZER) {
-            return eventRepository.findAll();
-        }
-
+    public List<Event> getActiveEvents() {
         return eventRepository.findByIsActiveTrue();
     }
 
     @Override
     public Event deactivateEvent(Long id) {
-        Event event = eventRepository.findById(id)
+        Event e = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        event.setActive(false);
-
-        return eventRepository.save(event);
+        e.setActive(false);
+        return eventRepository.save(e);
     }
 
     @Override

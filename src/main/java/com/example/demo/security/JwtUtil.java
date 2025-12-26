@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private final String SECRET = "secret-key";
-    private final long EXPIRATION = 1000 * 60 * 60 * 10; // 10 hours
+    private final long EXPIRATION = 1000 * 60 * 60 * 10;
 
     public String generateToken(long userId, String email, String role) {
         return Jwts.builder()
@@ -31,24 +31,11 @@ public class JwtUtil {
                 .getBody();
     }
 
-    public String getEmailFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return getClaims(token).getSubject();
     }
 
-    public Long getUserIdFromToken(String token) {
-        return getClaims(token).get("userId", Long.class);
-    }
-
-    public String getRoleFromToken(String token) {
-        return getClaims(token).get("role", String.class);
-    }
-
-    public boolean isTokenValid(String token) {
+    public boolean validateToken(String token) {
         return getClaims(token).getExpiration().after(new Date());
-    }
-
-    // REQUIRED BY TESTS + FILTER
-    public String getUsernameFromToken(String token) {
-        return getEmailFromToken(token);
     }
 }
