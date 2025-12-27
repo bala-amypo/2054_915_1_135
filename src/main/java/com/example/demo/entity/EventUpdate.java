@@ -1,48 +1,33 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
-@Table(name = "event_updates")
 public class EventUpdate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    private String message;
-
-    private LocalDateTime timestamp;
-
     @ManyToOne
-    @JoinColumn(name = "event_id")
     private Event event;
 
-    public EventUpdate() {}
+    private Instant timestamp;
+
+    @Enumerated(EnumType.STRING)
+    private SeverityLevel severityLevel;
 
     @PrePersist
     public void onCreate() {
-        timestamp = LocalDateTime.now();
+        timestamp = Instant.now();
+        if (severityLevel == null) {
+            severityLevel = SeverityLevel.LOW;
+        }
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) { this.id = id; }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
     }
 
     public Event getEvent() {
@@ -51,5 +36,17 @@ public class EventUpdate {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public SeverityLevel getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(SeverityLevel severityLevel) {
+        this.severityLevel = severityLevel;
     }
 }

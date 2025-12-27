@@ -1,28 +1,33 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 
 @Entity
-@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private String email;
-
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public Long getId() {
-        return id;
+    private Instant createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        createdAt = Instant.now();
+        if (role == null) {
+            role = Role.SUBSCRIBER;
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -47,5 +52,9 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }

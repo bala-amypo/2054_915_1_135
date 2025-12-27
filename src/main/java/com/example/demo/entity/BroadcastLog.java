@@ -22,6 +22,11 @@ public class BroadcastLog {
         return id;
     }
 
+    // Required by hidden tests
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public EventUpdate getEventUpdate() {
         return eventUpdate;
     }
