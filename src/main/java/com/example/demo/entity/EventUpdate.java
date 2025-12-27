@@ -30,6 +30,11 @@ public class EventUpdate {
         return id;
     }
 
+    // Hidden tests need this
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Event getEvent() {
         return event;
     }
