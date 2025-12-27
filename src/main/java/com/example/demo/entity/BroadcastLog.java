@@ -3,31 +3,23 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "broadcast_logs")
 public class BroadcastLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "event_update_id")
     private EventUpdate eventUpdate;
 
     @ManyToOne
-    @JoinColumn(name = "subscriber_id")
     private User subscriber;
 
-    private String deliveryStatus;
-
-    public BroadcastLog() {}
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public EventUpdate getEventUpdate() {
@@ -46,11 +38,11 @@ public class BroadcastLog {
         this.subscriber = subscriber;
     }
 
-    public String getDeliveryStatus() {
+    public DeliveryStatus getDeliveryStatus() {
         return deliveryStatus;
     }
 
-    public void setDeliveryStatus(String deliveryStatus) {
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
 }
