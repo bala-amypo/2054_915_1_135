@@ -1,43 +1,37 @@
 package com.example.demo.controller;
 
-import com.example.demo.repository.UserRepository;
-import com.example.demo.security.JwtUtil;
+import com.example.demo.dto.ApiResponse;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.User;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final UserService userService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    @PostMapping("/register")
+    public ApiResponse register(@RequestBody RegisterRequest request) {
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email,
-                                   @RequestParam String password) {
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
+        User saved = userService.register(user);
+
+        return new ApiResponse(
+                true,
+                "User registered successfully",
+                saved
         );
-
-        var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole().name()
-        );
-
-        return ResponseEntity.ok(token);
     }
 }
