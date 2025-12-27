@@ -5,11 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SecurityConfig {
 
-    // JwtUtil bean
     @Bean
     public JwtUtil jwtUtil() {
         return new JwtUtil(
@@ -18,11 +19,16 @@ public class SecurityConfig {
         );
     }
 
-    // AuthenticationManager bean (required by AuthController)
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
     ) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    //  REQUIRED by UserServiceImpl
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
